@@ -1,0 +1,10 @@
+node_modules
+.tmp
+.sass-cache
+.grunt
+bower_components
+dist/example
+.idea/
+*.DS_*
+npm-debug.log
+coverage
