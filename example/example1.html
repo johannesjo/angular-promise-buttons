@@ -1,1 +1,16 @@
-<button class="btn">My btn</button>
+<button class="btn"
+        ng-click="success()"
+        promise="successPromise">Success after delay
+</button>
+<button class="btn"
+        ng-click="error()"
+        promise="errorPromise">Error after delay
+</button>
+<button class="btn"
+        ng-click="endless()"
+        promise="endlessPromise">Never resolving promise
+</button>
+<button class="btn"
+        ng-click="auto()"
+        promise="autoPromise">Loading initially
+</button>
