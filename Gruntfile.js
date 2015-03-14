@@ -28,7 +28,7 @@ module.exports = function (grunt)
             },
             validationMsgs: {
                 files: ['<%= appConfig.tpl %>/*.html'],
-                tasks: ['ngtemplates:ngFabForm']
+                tasks: ['ngtemplates:angularPromiseButtons']
             },
             bower: {
                 files: ['bower.json'],
@@ -37,7 +37,7 @@ module.exports = function (grunt)
             js: {
                 files: [
                     '<%= appConfig.app %>/**/*.js',
-                    '<%= appConfig.example %>/**/*.js'
+                    '<%= appConfig.example %>/**/*.js',
                 ],
                 tasks: [
                     'newer:jshint:all',
@@ -168,8 +168,7 @@ module.exports = function (grunt)
             all: {
                 src: [
                     'Gruntfile.js',
-                    '<%= appConfig.app %>/**/*.js',
-                    '!<%= appConfig.app %>/default-validation-msgs.js'
+                    '<%= appConfig.app %>/**/*.js'
                 ]
             }
         },
@@ -308,7 +307,7 @@ module.exports = function (grunt)
         },
 
         ngtemplates: {
-            ngFabForm: {
+            angularPromiseButtons: {
                 cwd: 'src/templates',
                 src: '*.html',
                 dest: 'src/tpls.js',

@@ -1,10 +1,10 @@
 angular.module('exampleApp', [
-    'angularPromiseButtons',
-    'ngAnimate'
+    'ngAnimate',
+    'angularPromiseButtons'
 ])
     .factory('fakeFac', function ($q, $timeout, $log)
     {
-        var standardDelay = 3000;
+        var standardDelay = 1000;
         return {
             success: function ()
             {
@@ -14,7 +14,7 @@ angular.module('exampleApp', [
                     $log.info('resolve');
                     defer.resolve({
                         msg: 'SUCCESS'
-                    })
+                    });
                 }, standardDelay);
                 return defer.promise;
             },
@@ -26,7 +26,7 @@ angular.module('exampleApp', [
                     $log.info('error');
                     defer.reject({
                         msg: 'ERROR'
-                    })
+                    });
                 }, standardDelay);
                 return defer.promise;
             },
@@ -41,6 +41,7 @@ angular.module('exampleApp', [
     {
         $scope.success = function ()
         {
+            $scope.successPromise = false;
             $scope.successPromise = fakeFac.success();
         };
 
@@ -49,14 +50,20 @@ angular.module('exampleApp', [
             $scope.errorPromise = fakeFac.error();
         };
 
-        $scope.endlesse = function ()
+        $scope.endless = function ()
         {
-            $scope.endlessePromise = fakeFac.endlesse();
+            $scope.endlessPromise = fakeFac.endless();
         };
 
         $scope.auto = function ()
         {
             $scope.autoPromise = fakeFac.endless();
         };
+
+        $scope.submit = function ()
+        {
+            $scope.submitPromise = fakeFac.success();
+        };
+
         $scope.auto();
     });
