@@ -1,0 +1,228 @@
+<!doctype html>
+<!--[if lt IE 9]>
+<html class="old-browser no-js"><![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"><!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <title>angular-promise-buttons</title>
+    <meta name="viewport"
+          content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- bower:css -->
+    <!-- endbower -->
+    <link rel="stylesheet"
+          href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+
+    <link rel="stylesheet"
+          href="//cdnjs.cloudflare.com/ajax/libs/octicons/2.1.2/octicons.css">
+
+    <link rel="stylesheet"
+          href="style.css">
+
+    <style>
+        .form-group {
+            position: relative;
+        }
+
+        .anchor {
+            display: none;
+        }
+
+        .main-header {
+            background:     #000;
+            padding-bottom: 15px;
+            color:          #eee;
+        }
+
+        .main-header h1 {
+            color: #eee;
+        }
+
+        p.header {
+            font-style: italic;
+        }
+
+        .motto {
+            font-size: 16px;
+        }
+
+        .help-block .list-unstyled {
+            padding: 0;
+            margin:  0;
+            display: block;
+        }
+
+    </style>
+</head>
+<body>
+<header class="main-header">
+    <div class="container">
+
+        <h1 class="header">angular-promise-buttons</h1>
+        <p class="header motto">Chilled Buttons for Angular</p>
+        <a class="buttons btn btn-primary "
+           href="https://github.com/johannesjo/angular-promise-buttons/zipball/master">
+            <span class="octicon  octicon-cloud-download"></span> Download ZIP
+            <span class="octicon  octicon-cloud-download"></span></a>
+
+        <a class="buttons btn btn-primary "
+           href="https://github.com/johannesjo/angular-promise-buttons/tarball/master">
+            <span class="octicon  octicon-cloud-download"></span> Download TAR
+            <span class="octicon  octicon-cloud-download"></span></a>
+
+        <a class="buttons btn btn-primary  github"
+           href="https://github.com/johannesjo/angular-promise-buttons"><span class="octicon  octicon-mark-github"></span> View On
+            GitHub <span class="octicon  octicon-mark-github"></span></a>
+        <a class="buttons btn btn-primary "
+           href="#demo"><span class="octicon  octicon-squirrel"></span> Demo
+            <span class="octicon  octicon-squirrel"></span></a>
+        <a class="buttons btn btn-primary "
+           href="#discussion"><span class="octicon  octicon-organization"></span> Discuss
+            <span class="octicon  octicon-organization"></span></a>
+        <p class="header"><br>This project is maintained by <a class="header name"
+                                                               href="https://github.com/johannesjo">johannesjo</a></p>
+
+        <a href="https://github.com/johannesjo/angular-promise-buttons"
+           class="github-button"
+           data-icon="octicon-star"
+           data-count-href="/johannesjo/angular-promise-buttons/stargazers"
+           data-count-api="/repos/johannesjo/angular-promise-buttons#stargazers_count">Star</a>
+        <a href="https://github.com/johannesjo/angular-promise-buttons"
+           class="github-button"
+           data-icon="octicon-git-branch"
+           data-count-href="/johannesjo/angular-promise-buttons/network"
+           data-count-api="/repos/johannesjo/angular-promise-buttons#forks_count">Fork</a>
+        <a href="https://github.com/johannesjo/angular-promise-buttons/issues"
+           class="github-button"
+           data-icon="octicon-issue-opened"
+           data-count-api="/repos/johannesjo/angular-promise-buttons#open_issues_count">Issue</a>
+
+        <script async
+                defer
+                id="github-bjs"
+                src="https://buttons.github.io/buttons.js"></script>
+    </div>
+</header>
+
+<div class="container">
+    <p><a href="http://waffle.io/johannesjo/angular-promise-buttons"><img src="https://badge.waffle.io/johannesjo/angular-promise-buttons.svg?label=ready&amp;title=Ready" alt="Stories in Ready"></a>
+<a href="http://waffle.io/johannesjo/angular-promise-buttons"><img src="https://badge.waffle.io/johannesjo/angular-promise-buttons.svg?label=in%20progress&amp;title=In%20Progress" alt="Stories in progress"></a>
+<a href="https://travis-ci.org/johannesjo/angular-promise-buttons"><img src="https://travis-ci.org/johannesjo/angular-promise-buttons.svg" alt="Build Status"></a>
+<a href="https://coveralls.io/r/johannesjo/angular-promise-buttons?branch=master"><img src="https://coveralls.io/repos/johannesjo/angular-promise-buttons/badge.svg?branch=master" alt="Coverage Status"></a></p>
+<h1 id="angular-promise-buttons">angular-promise-buttons</h1>
+<p><em>Chilled Buttons for AngularJS</em></p>
+<p>...</p>
+<p><a href="https://github.com/johannesjo/angular-promise-buttons/issues">Bug-reports or feature request</a> as well as any other kind of <strong>feedback is highly welcome!</strong></p>
+<h2 id="getting-started">getting started</h2>
+<p>Install it via bower</p>
+<pre><code>bower install angular-promise-buttons -S
+</code></pre><p>and add <code>angularPromiseButtons</code> as dependency in your main module:</p>
+<pre><code>angular.module(&#39;yourApp&#39;,[
+  &#39;angularPromiseButtons&#39;
+]);
+</code></pre><p>Using the buttons is easy. Just hand over the promise in question to the promiseBtn-directive and you&#39;re good to go:</p>
+<pre><code class="lang-html">&lt;button class=&quot;btn&quot;
+        ng-click=&quot;success()&quot;
+        promise-btn=&quot;successPromise&quot;&gt;MyBtn &lt;span&gt;Look I&#39;m nested content&lt;/span&gt;
+&lt;/button&gt;
+</code></pre>
+<p>Example-Controller:</p>
+<pre><code class="lang-js">fakeFactory = function(){
+    var defer = $q.defer();
+    $timeout(function ()
+    {
+      defer.resolve({
+        msg: &#39;SUCCESS&#39;
+      });
+    }, 1000);
+    return defer.promise;
+}
+$scope.success = function ($scope, $q)
+{
+    $scope.successPromise = fakeFactory();
+};
+</code></pre>
+<h2 id="configuration">configuration</h2>
+<p>There are also some defaults for you to set (if you like). You can do this by using the angularPromiseButtons-provider:</p>
+<pre><code class="lang-javascript">angular.module(&#39;exampleApp&#39;, [
+  &#39;angularPromiseButtons&#39;
+])
+.config(function (angularPromiseButtonsProvider)
+{
+  angularPromiseButtonsProvider.extendConfig({
+    spinnerTpl: &#39;&lt;span class=&quot;btn-spinner&quot;&gt;&lt;/span&gt;&#39;,
+    disableBtn: true,
+    btnLoadingClass: &#39;is-loading&#39;
+  });
+});
+</code></pre>
+<p>Thats all the logic there is (for now). Adjusting the look and feel of the spinner can be done using your own styles.</p>
+<h2 id="-contribute-">❤ contribute ❤</h2>
+<p>I&#39;m happy for any <a href="https://github.com/johannesjo/angular-promise-buttons/issues">issue or feature request</a>, you might encounter or want to have. Even a one liner is better, than no feedback at all. Pull requests are also highly welcome. Just fork the repository, clone it and run <code>grunt serve</code> for development. Another important factor is the number of developers using and thus testing <code>angular-promise-buttons</code>. Tell your fellow programmers, <a href="http://ngmodules.org/modules/angular-promise-buttons">say that you use it on ng-modules</a>, tweet or even blog about it.</p>
+<p><code>angular-promise-buttons</code> is published under the <a href="https://github.com/johannesjo/angular-promise-buttons/blob/master/LICENSE">The GNU Lesser General Public License V2.1</a>.</p>
+<h2 id="-possible-fabulous-future-features">(possible) fabulous future features</h2>
+<ul>
+<li><a href="https://github.com/johannesjo/angular-promise-buttons/issues">your feature request</a>!</li>
+</ul>
+
+</div>
+<hr>
+<div class="container"
+     ng-app="exampleApp"
+     ng-controller="exampleCtrl">
+    <a name="demo"></a>
+
+    <h1>Demos</h1>
+
+    <h2>Plunkr</h2>
+
+    <div class="example">
+        <iframe src="http://embed.plnkr.co/8vCSPw/preview"
+                style="width: 100%;min-height: 700px; border: none;"></iframe>
+    </div>
+
+    <div ng-include="'example1.html'"
+         class="example"></div>
+</div>
+
+<div class="container">
+    <a name="discussion"></a>
+
+    <h2>Discussion</h2>
+
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'angular-promise-buttons'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function ()
+        {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+        Disqus.</a></noscript>
+
+</div>
+
+
+<!-- bower:js -->
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.11/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.11/angular-animate.min.js"></script>
+<script src="bower_components/angular-mocks/angular-mocks.js"></script>
+<!-- endbower -->
+
+<script src="angular-promise-buttons.min.js"></script>
+
+<!-- fileblock:js example -->
+<script src="scripts/example.js"></script>
+<!-- endfileblock -->
+
+</body>
+</html>
