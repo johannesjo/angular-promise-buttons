@@ -25,8 +25,50 @@ angular.module('yourApp',[
 ]);
 ```
 
+Using the buttons is easy. Just hand over the promise in question to the promiseBtn-directive and you're good to go:
+
+```html
+<button class="btn"
+        ng-click="success()"
+        promise-btn="successPromise">MyBtn <span>Look I'm nested content</span>
+</button>
+```
+
+Example-Controller:
+```js
+fakeFactory = function(){
+    var defer = $q.defer();
+    $timeout(function ()
+    {
+      defer.resolve({
+        msg: 'SUCCESS'
+      });
+    }, 1000);
+    return defer.promise;
+}
+$scope.success = function ($scope, $q)
+{
+    $scope.successPromise = fakeFactory();
+};
+```
 
 
+## configuration
+There are also some defaults for you to set (if you like). You can do this by using the angularPromiseButtons-provider:
+```javascript
+angular.module('exampleApp', [
+  'angularPromiseButtons'
+])
+.config(function (angularPromiseButtonsProvider)
+{
+  angularPromiseButtonsProvider.extendConfig({
+    spinnerTpl: '<span class="btn-spinner"></span>',
+    disableBtn: true,
+    btnLoadingClass: 'is-loading'
+  });
+});
+```
+Thats all the logic there is (for now). Adjusting the look and feel of the spinner can be done using your own styles.
 
 
 ## ❤ contribute ❤
@@ -34,5 +76,5 @@ I'm happy for any [issue or feature request](https://github.com/johannesjo/angul
 
 `angular-promise-buttons` is published under the [The GNU Lesser General Public License V2.1](https://github.com/johannesjo/angular-promise-buttons/blob/master/LICENSE).
 
-## (possible) fabulous future features
+## (possible) promising future features
 * [your feature request](https://github.com/johannesjo/angular-promise-buttons/issues)!
