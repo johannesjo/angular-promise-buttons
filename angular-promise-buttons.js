@@ -11,7 +11,7 @@ angular.module('angularPromiseButtons').run(['$templateCache', function($templat
 }]);
 
 angular.module('angularPromiseButtons')
-    .directive('promiseBtn', ["angularPromiseButtons", function (angularPromiseButtons)
+    .directive('promiseBtn', ['angularPromiseButtons', function (angularPromiseButtons)
     {
         'use strict';
 
