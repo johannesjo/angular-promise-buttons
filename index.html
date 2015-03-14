@@ -112,7 +112,7 @@
 <a href="https://coveralls.io/r/johannesjo/angular-promise-buttons?branch=master"><img src="https://coveralls.io/repos/johannesjo/angular-promise-buttons/badge.svg?branch=master" alt="Coverage Status"></a></p>
 <h1 id="angular-promise-buttons">angular-promise-buttons</h1>
 <p><em>Chilled Buttons for AngularJS</em></p>
-<p>...</p>
+<p>There are cool loading buttons out there for angular. Only thing which annoys me, is that you have to manually trigger there loading state via a boolean (most of the times). <code>angular-promise-buttons</code> exists to solve this problem. Just pass the promise and save yourself two lines of code every time.</p>
 <p><a href="https://github.com/johannesjo/angular-promise-buttons/issues">Bug-reports or feature request</a> as well as any other kind of <strong>feedback is highly welcome!</strong></p>
 <h2 id="getting-started">getting started</h2>
 <p>Install it via bower</p>
@@ -123,26 +123,25 @@
 ]);
 </code></pre><p>Using the buttons is easy. Just hand over the promise in question to the promiseBtn-directive and you&#39;re good to go:</p>
 <pre><code class="lang-html">&lt;button class=&quot;btn&quot;
-        ng-click=&quot;success()&quot;
-        promise-btn=&quot;successPromise&quot;&gt;MyBtn &lt;span&gt;Look I&#39;m nested content&lt;/span&gt;
+        ng-click=&quot;yourServiceCaller()&quot;
+        promise-btn=&quot;yourPromise&quot;&gt;MyBtn &lt;span&gt;Look I&#39;m nested content&lt;/span&gt;
 &lt;/button&gt;
 </code></pre>
-<p>Example-Controller:</p>
-<pre><code class="lang-js">fakeFactory = function(){
-    var defer = $q.defer();
-    $timeout(function ()
-    {
-      defer.resolve({
-        msg: &#39;SUCCESS&#39;
-      });
-    }, 1000);
-    return defer.promise;
-}
-$scope.success = function ($scope, $q)
+<p>Now you just have to assign a promise to <code>yourPromise</code>:</p>
+<pre><code class="lang-javascript">// inside some controller
+$scope.success = function ()
 {
-    $scope.successPromise = fakeFactory();
+  $scope.successPromise = fakeFactory.method().then(...);
 };
 </code></pre>
+<h2 id="styling-the-button">styling the button</h2>
+<p>The base-styles might not be overwhelmingly sexy, but it is easy to fix that! There are lots of free css-spinners out there, just find one of your liking and add the css.</p>
+<p><strong>Ressources:</strong></p>
+<ul>
+<li><a href="http://cssload.net/">http://cssload.net/</a></li>
+<li><a href="http://projects.lukehaas.me/css-loaders/">http://projects.lukehaas.me/css-loaders/</a></li>
+<li><a href="http://tobiasahlin.com/spinkit/">http://tobiasahlin.com/spinkit/</a></li>
+</ul>
 <h2 id="configuration">configuration</h2>
 <p>There are also some defaults for you to set (if you like). You can do this by using the angularPromiseButtons-provider:</p>
 <pre><code class="lang-javascript">angular.module(&#39;exampleApp&#39;, [
