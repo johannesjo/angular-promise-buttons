@@ -168,7 +168,8 @@ module.exports = function (grunt)
             all: {
                 src: [
                     'Gruntfile.js',
-                    '<%= appConfig.app %>/**/*.js'
+                    '<%= appConfig.app %>/**/*.js',
+                    '!<%= appConfig.app %>/tpls.js'
                 ]
             }
         },
