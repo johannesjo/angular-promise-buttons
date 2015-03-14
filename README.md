@@ -8,7 +8,7 @@ angular-promise-buttons
 
 *Chilled Buttons for AngularJS*
 
-...
+There are cool loading buttons out there for angular. Only thing which annoys me, is that you have to manually trigger there loading state via a boolean (most of the times). ```angular-promise-buttons``` exists to solve this problem. Just pass the promise and save yourself two lines of code every time.
 
 [Bug-reports or feature request](https://github.com/johannesjo/angular-promise-buttons/issues) as well as any other kind of **feedback is highly welcome!**
 
@@ -29,28 +29,26 @@ Using the buttons is easy. Just hand over the promise in question to the promise
 
 ```html
 <button class="btn"
-        ng-click="success()"
-        promise-btn="successPromise">MyBtn <span>Look I'm nested content</span>
+        ng-click="yourServiceCaller()"
+        promise-btn="yourPromise">MyBtn <span>Look I'm nested content</span>
 </button>
 ```
-
-Example-Controller:
-```js
-fakeFactory = function(){
-    var defer = $q.defer();
-    $timeout(function ()
-    {
-      defer.resolve({
-        msg: 'SUCCESS'
-      });
-    }, 1000);
-    return defer.promise;
-}
-$scope.success = function ($scope, $q)
+Now you just have to assign a promise to ```yourPromise```:
+```javascript
+// inside some controller
+$scope.success = function ()
 {
-    $scope.successPromise = fakeFactory();
+  $scope.successPromise = fakeFactory.method().then(...);
 };
 ```
+
+## styling the button
+The base-styles might not be overwhelmingly sexy, but it is easy to fix that! There are lots of free css-spinners out there, just find one of your liking and add the css.
+
+**Ressources:**
+* http://cssload.net/
+* http://projects.lukehaas.me/css-loaders/
+* http://tobiasahlin.com/spinkit/
 
 
 ## configuration
