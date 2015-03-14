@@ -39,6 +39,9 @@ angular.module('exampleApp', [
     })
     .controller('exampleCtrl', function ($scope, fakeFac)
     {
+        $scope.v = {
+            promiseIndex: 0
+        };
         $scope.success = function ()
         {
             $scope.successPromise = false;
@@ -63,6 +66,22 @@ angular.module('exampleApp', [
         $scope.submit = function ()
         {
             $scope.submitPromise = fakeFac.success();
+        };
+        $scope.chain = function ()
+        {
+            $scope.v.promiseIndex = 0;
+            $scope.chainedPromises = $scope.countChain()
+                .then($scope.countChain)
+                .then($scope.countChain)
+                .then($scope.countChain)
+                .then($scope.countChain);
+        };
+        $scope.countChain = function ()
+        {
+            return fakeFac.success().then(function ()
+            {
+                $scope.v.promiseIndex++;
+            });
         };
 
         $scope.auto();

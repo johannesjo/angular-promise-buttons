@@ -8,7 +8,7 @@ angular-promise-buttons
 
 *Chilled Buttons for AngularJS*
 
-There are cool loading buttons out there for angular. Only thing which annoys me, is that you have to manually trigger there loading state via a boolean (most of the times). ```angular-promise-buttons``` exists to solve this problem. Just pass the promise and save yourself two lines of code every time.
+There are cool loading buttons out there for angular. Only thing which annoys me, is that you (most of the times) have to manually trigger their loading state via a boolean which leads to a bit of repetition, declaring those again and again. ```angular-promise-buttons``` exists to take away some of that, by handling the loading state directly by passing the promise. Saves you two lines of code every time.
 
 [Bug-reports or feature request](https://github.com/johannesjo/angular-promise-buttons/issues) as well as any other kind of **feedback is highly welcome!**
 
@@ -43,7 +43,7 @@ $scope.success = function ()
 ```
 
 ## styling the button
-The base-styles might not be overwhelmingly sexy, but it is easy to fix that! There are lots of free css-spinners out there, just find one of your liking and add the css.
+The base-styles might not be overwhelmingly sexy, but it is easy to fix that! There are lots of free css-spinners out there. Just find one of your liking and add the css.
 
 **Ressources:**
 * http://cssload.net/
@@ -52,7 +52,7 @@ The base-styles might not be overwhelmingly sexy, but it is easy to fix that! Th
 
 
 ## configuration
-There are also some defaults for you to set (if you like). You can do this by using the angularPromiseButtons-provider:
+There are also some defaults for you to set, if you like. You can do this by using the ```angularPromiseButtonsProvider```:
 ```javascript
 angular.module('exampleApp', [
   'angularPromiseButtons'

@@ -130,5 +130,39 @@ describe('promise-buttons directive', function ()
             expect(element.hasClass('is-loading')).toBeTruthy();
             expect(element.attr('disabled')).toBe('disabled');
         });
+
+        it('should be able to handle promise chains', function ()
+        {
+            scope.asyncCall = function ()
+            {
+                scope.v = {promiseIndex: 0};
+                scope.promise = scope.countChain()
+                    .then(scope.countChain)
+                    .then(scope.countChain)
+                    .then(scope.countChain)
+                    .then(scope.countChain);
+            };
+            scope.countChain = function ()
+            {
+                return fakeFact.success().then(function ()
+                {
+                    $timeout.flush();
+                    scope.v.promiseIndex++;
+                    if (scope.v.promiseIndex < 5) {
+                        expect(element.hasClass('is-loading')).toBeTruthy();
+                    }
+                });
+            };
+
+            expect(element.hasClass('is-loading')).toBeFalsy();
+            element.triggerHandler('click');
+            scope.$digest();
+            expect(element.hasClass('is-loading')).toBeTruthy();
+
+            // test test
+            $timeout.flush();
+            expect(scope.v.promiseIndex).toBe(5);
+            expect(element.hasClass('is-loading')).toBeFalsy();
+        });
     });
 });

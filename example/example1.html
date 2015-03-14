@@ -27,6 +27,13 @@
         promise-btn="successPromise">share
 </button>
 
+<h3>Chained promise buttons</h3>
+<button class="btn"
+        ng-click="chain()"
+        promise-btn="chainedPromises">Load promise chain {{ v.promiseIndex }}
+</button>
+
+
 <h3>Inside a form</h3>
 <form ng-submit="submit()">
     <button class="btn"
