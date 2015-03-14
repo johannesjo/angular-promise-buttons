@@ -6,6 +6,8 @@
         ng-click="error()"
         promise-btn="errorPromise">Error after delay
 </button>
+<br>
+<br>
 <button class="btn"
         ng-click="endless()"
         promise-btn="endlessPromise">Never resolving promise
@@ -15,6 +17,15 @@
         promise-btn="autoPromise">Loading initially and forever
 </button>
 
+<h3>Same promise buttons</h3>
+<button class="btn"
+        ng-click="success()"
+        promise-btn="successPromise">We
+</button>
+<button class="btn"
+        ng-click="success()"
+        promise-btn="successPromise">share
+</button>
 
 <h3>Inside a form</h3>
 <form ng-submit="submit()">
