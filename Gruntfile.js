@@ -214,7 +214,8 @@ module.exports = function (grunt)
             },
             test: {
                 src: [
-                    './karma.conf.js'
+                    './karma.conf.js',
+										'Gruntfile.js'
                 ],
                 ignorePath: /\.\.\//,
                 exclude: [],
