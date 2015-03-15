@@ -112,7 +112,7 @@
 <a href="https://coveralls.io/r/johannesjo/angular-promise-buttons?branch=master"><img src="https://coveralls.io/repos/johannesjo/angular-promise-buttons/badge.svg?branch=master" alt="Coverage Status"></a></p>
 <h1 id="angular-promise-buttons">angular-promise-buttons</h1>
 <p><em>Chilled Buttons for AngularJS</em></p>
-<p>There are cool loading buttons out there for angular. Only thing which annoys me, is that you have to manually trigger there loading state via a boolean (most of the times). <code>angular-promise-buttons</code> exists to solve this problem. Just pass the promise and save yourself two lines of code every time.</p>
+<p>There are cool loading buttons out there for angular. Only thing which annoys me, is that you (most of the times) have to manually trigger their loading state via a boolean which leads to a bit of repetition, declaring those again and again. <code>angular-promise-buttons</code> exists to take away some of that, by handling the loading state directly by passing the promise. Saves you two lines of code every time. Check out the <a href="http://johannesjo.github.io/angular-promise-buttons/#demo">DEMO</a>!</p>
 <p><a href="https://github.com/johannesjo/angular-promise-buttons/issues">Bug-reports or feature request</a> as well as any other kind of <strong>feedback is highly welcome!</strong></p>
 <h2 id="getting-started">getting started</h2>
 <p>Install it via bower</p>
@@ -135,7 +135,7 @@ $scope.success = function ()
 };
 </code></pre>
 <h2 id="styling-the-button">styling the button</h2>
-<p>The base-styles might not be overwhelmingly sexy, but it is easy to fix that! There are lots of free css-spinners out there, just find one of your liking and add the css.</p>
+<p>The base-styles might not be overwhelmingly sexy, but it is easy to fix that! There are lots of free css-spinners out there. Just find one of your liking and add the css.</p>
 <p><strong>Ressources:</strong></p>
 <ul>
 <li><a href="http://cssload.net/">http://cssload.net/</a></li>
@@ -143,7 +143,7 @@ $scope.success = function ()
 <li><a href="http://tobiasahlin.com/spinkit/">http://tobiasahlin.com/spinkit/</a></li>
 </ul>
 <h2 id="configuration">configuration</h2>
-<p>There are also some defaults for you to set (if you like). You can do this by using the angularPromiseButtons-provider:</p>
+<p>There are also some defaults for you to set, if you like. You can do this by using the <code>angularPromiseButtonsProvider</code>:</p>
 <pre><code class="lang-javascript">angular.module(&#39;exampleApp&#39;, [
   &#39;angularPromiseButtons&#39;
 ])
