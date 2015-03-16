@@ -5,17 +5,20 @@ describe('promise-buttons directive', function ()
     var scope,
         $timeout,
         $rootScope,
+        $httpBackend,
         $compile,
         fakeFact;
 
     beforeEach(module('angularPromiseButtons'));
 
-    beforeEach(inject(function (_$rootScope_, _$compile_, _$timeout_, _$q_)
+    beforeEach(inject(function (_$rootScope_, _$compile_, _$timeout_, _$q_, _$http_, _$httpBackend_)
     {
         $rootScope = _$rootScope_;
         $compile = _$compile_;
         $timeout = _$timeout_;
+        $httpBackend = _$httpBackend_;
         var $q = _$q_;
+        var $http = _$http_;
 
         scope = $rootScope.$new();
 
@@ -42,11 +45,25 @@ describe('promise-buttons directive', function ()
             {
                 var defer = $q.defer();
                 return defer.promise;
+            },
+            httpSuccess: function ()
+            {
+                return $http.get('/mock');
+            },
+            httpError: function ()
+            {
+                return $http.get('/mockFail');
             }
         };
     }));
 
-    describe('a simple success promise on click', function ()
+    afterEach(function ()
+    {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+    });
+
+    describe('a simple promise on click', function ()
     {
         var element;
 
@@ -162,6 +179,97 @@ describe('promise-buttons directive', function ()
             // test test
             $timeout.flush();
             expect(scope.v.promiseIndex).toBe(5);
+            expect(element.hasClass('is-loading')).toBeFalsy();
+        });
+    });
+
+    describe('a $http promise on click', function ()
+    {
+        var element;
+
+        beforeEach(function ()
+        {
+            var html = '<button class="btn" ng-click="asyncCall()" promise-btn="promise">Success after delay</button>';
+            element = $compile(html)(scope);
+            scope.$digest();
+        });
+
+
+        it('should add and remove the is-loading class for $http promises', function ()
+        {
+            $httpBackend.expectGET('/mock').respond(200, 'validResponse');
+
+            scope.asyncCall = function ()
+            {
+                scope.promise = fakeFact.httpSuccess()
+                    .then(function (resp)
+                    {
+                        scope.test = resp.data;
+                    });
+            };
+            element.triggerHandler('click');
+            scope.$digest();
+            expect(element.hasClass('is-loading')).toBeTruthy();
+            $httpBackend.flush();
+            expect(scope.test).toBe('validResponse');
+            expect(element.hasClass('is-loading')).toBeFalsy();
+        });
+
+
+        it('should add and remove the is-loading class for $http promise chains', function ()
+        {
+            $httpBackend.expectGET('/mock').respond(200, 'validResponse');
+            $httpBackend.expectGET('/mock').respond(200, 'validResponse');
+            $httpBackend.expectGET('/mock').respond(200, 'validResponse');
+            $httpBackend.expectGET('/mock').respond(200, 'validResponse');
+
+            scope.chainRing = function ()
+            {
+                return fakeFact.httpSuccess();
+            };
+            scope.asyncCall = function ()
+            {
+                scope.promise = fakeFact.httpSuccess()
+                    .then(scope.chainRing)
+                    .then(scope.chainRing)
+                    .then(scope.chainRing);
+            };
+            element.triggerHandler('click');
+            scope.$digest();
+            expect(element.hasClass('is-loading')).toBeTruthy();
+            $httpBackend.flush();
+            expect(element.hasClass('is-loading')).toBeFalsy();
+        });
+
+        it('finally an catch functions should still exectue', function ()
+        {
+            var catchCalled = false,
+                finallyCalled = false;
+            $httpBackend.expectGET('/mockFail').respond(400, 'validResponse');
+
+            scope.chainRing = function ()
+            {
+                return fakeFact.httpError();
+            };
+            scope.asyncCall = function ()
+            {
+                scope.promise = scope.chainRing()
+                    .then(scope.chainRing)
+                    .catch(function ()
+                    {
+                        catchCalled = true;
+                    })
+                    .finally(function ()
+                    {
+                        finallyCalled = true;
+                    });
+            };
+            element.triggerHandler('click');
+            scope.$digest();
+            expect(element.hasClass('is-loading')).toBeTruthy();
+            $httpBackend.flush();
+            expect(catchCalled).toBeTruthy();
+            expect(finallyCalled).toBeTruthy();
             expect(element.hasClass('is-loading')).toBeFalsy();
         });
     });
