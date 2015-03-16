@@ -48,7 +48,6 @@ angular.module('angularPromiseButtons')
                         }
                     };
 
-
                 scope.$watch(function ()
                 {
                     return scope.promiseBtn;
@@ -56,7 +55,7 @@ angular.module('angularPromiseButtons')
                 {
                     if (mVal && mVal.then) {
                         loading();
-                        mVal.then(loadingFinished, loadingFinished);
+                        mVal.finally(loadingFinished);
                     }
                 });
             }
