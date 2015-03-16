@@ -44,7 +44,7 @@ angular.module('angularPromiseButtons')
                             el.removeClass(cfg.btnLoadingClass);
                         }
                         if (cfg.disableBtn) {
-                            el.attr('disabled', '');
+                            el.removeAttr('disabled');
                         }
                     };
 
