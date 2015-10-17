@@ -400,9 +400,9 @@ module.exports = function (grunt)
                 options: {
                     files: [
                         // bower:js
-                        'app/bower_components/angular/angular.js',
-                        'app/bower_components/angular-animate/angular-animate.js',
-                        'app/bower_components/angular-mocks/angular-mocks.js',
+                        'bower_components/angular/angular.js',
+                        'bower_components/angular-animate/angular-animate.js',
+                        'bower_components/angular-mocks/angular-mocks.js',
                         // endbower
                         '<%= appConfig.dist %>/angular-promise-buttons.min.js',
                         '<%= appConfig.app %>/*.spec.js'
