@@ -17,9 +17,9 @@ module.exports = function (config)
         // list of files / patterns to load in the browser
         files: [
             // bower:js
-            'bower_components/angular/angular.js',
-            'bower_components/angular-animate/angular-animate.js',
-            'bower_components/angular-mocks/angular-mocks.js',
+            'app/bower_components/angular/angular.js',
+            'app/bower_components/angular-animate/angular-animate.js',
+            'app/bower_components/angular-mocks/angular-mocks.js',
             // endbower
 
             // modules first

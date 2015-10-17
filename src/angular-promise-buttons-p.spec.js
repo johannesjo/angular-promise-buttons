@@ -137,5 +137,80 @@ describe('promise-buttons directive with config', function ()
             scope.$digest();
             expect(element.hasClass('CUSTOM')).toBeTruthy();
         });
+
+        it('should add class and disabled to multiple buttons with the same promise', function ()
+        {
+            provider.extendConfig({
+                addClassToCurrentBtnOnly: false,
+                disableCurrentBtnOnly: false
+            });
+            var element1 = $compile(html)(scope);
+            var element2 = $compile(html)(scope);
+            scope.$digest();
+
+            scope.asyncCall = function ()
+            {
+                scope.promise = fakeFact.error();
+            };
+
+            element1.triggerHandler('click');
+            scope.$digest();
+
+            expect(element1.hasClass('is-loading')).toBe(true);
+            expect(element1.attr('disabled')).toBe('disabled');
+
+            expect(element2.hasClass('is-loading')).toBe(true);
+            expect(element2.attr('disabled')).toBe('disabled');
+        });
+
+
+        it('should add class to currently clicked button only when option is specified', function ()
+        {
+            provider.extendConfig({
+                addClassToCurrentBtnOnly: true
+            });
+            var element1 = $compile(html)(scope);
+            var element2 = $compile(html)(scope);
+            scope.$digest();
+
+            scope.asyncCall = function ()
+            {
+                scope.promise = fakeFact.error();
+            };
+
+            element1.triggerHandler('click');
+            scope.$digest();
+
+            expect(element1.hasClass('is-loading')).toBe(true);
+            expect(element1.attr('disabled')).toBe('disabled');
+
+            expect(element2.hasClass('is-loading')).toBe(false);
+            expect(element2.attr('disabled')).toBe('disabled');
+        });
+
+
+        it('should add disabled attribute to currently clicked button only when option is specified', function ()
+        {
+            provider.extendConfig({
+                disableCurrentBtnOnly: true
+            });
+            var element1 = $compile(html)(scope);
+            var element2 = $compile(html)(scope);
+            scope.$digest();
+
+            scope.asyncCall = function ()
+            {
+                scope.promise = fakeFact.error();
+            };
+
+            element1.triggerHandler('click');
+            scope.$digest();
+
+            expect(element1.hasClass('is-loading')).toBe(true);
+            expect(element1.attr('disabled')).toBe('disabled');
+
+            expect(element2.hasClass('is-loading')).toBe(true);
+            expect(element2.attr('disabled')).toBe(undefined);
+        });
     });
 });

@@ -15,26 +15,45 @@ angular.module('angularPromiseButtons')
             {
                 var cfg = angularPromiseButtons.config;
 
+                var loading = function ()
+                {
+                    if (cfg.btnLoadingClass && !cfg.addClassToCurrentBtnOnly) {
+                        el.addClass(cfg.btnLoadingClass);
+                    }
+                    if (cfg.disableBtn && !cfg.disableCurrentBtnOnly) {
+                        el.attr('disabled', 'disabled');
+                    }
+                };
+
+                var loadingFinished = function ()
+                {
+                    if (cfg.btnLoadingClass) {
+                        el.removeClass(cfg.btnLoadingClass);
+                    }
+                    if (cfg.disableBtn) {
+                        el.removeAttr('disabled');
+                    }
+                };
+
+
+                // init
                 el.append(cfg.spinnerTpl);
 
-                var loading = function ()
+                // handle current button only options via click
+                if (cfg.addClassToCurrentBtnOnly) {
+                    el.on('click', function ()
                     {
-                        if (cfg.btnLoadingClass) {
-                            el.addClass(cfg.btnLoadingClass);
-                        }
-                        if (cfg.disableBtn) {
-                            el.attr('disabled', 'disabled');
-                        }
-                    },
-                    loadingFinished = function ()
+                        el.addClass(cfg.btnLoadingClass);
+                    });
+                }
+
+                if (cfg.disableCurrentBtnOnly) {
+                    el.on('click', function ()
                     {
-                        if (cfg.btnLoadingClass) {
-                            el.removeClass(cfg.btnLoadingClass);
-                        }
-                        if (cfg.disableBtn) {
-                            el.removeAttr('disabled');
-                        }
-                    };
+                        el.attr('disabled', 'disabled');
+                    });
+                }
+
 
                 scope.$watch(function ()
                 {
