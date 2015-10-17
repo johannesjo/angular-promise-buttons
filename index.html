@@ -113,6 +113,7 @@
 <h1 id="angular-promise-buttons">angular-promise-buttons</h1>
 <p><em>Chilled Buttons for AngularJS</em></p>
 <p>There are cool loading buttons out there for angular. Only thing which annoys me, is that you (most of the times) have to manually trigger their loading state via a boolean which leads to a bit of repetition, declaring those again and again. <code>angular-promise-buttons</code> exists to take away some of that, by handling the loading state directly by passing the promise. Saves you two lines of code every time. Check out the <a href="http://johannesjo.github.io/angular-promise-buttons/#demo">DEMO</a>!</p>
+<p>Also you can play with the code on <a href="http://plnkr.co/edit/yKrlohXVL15fRjTjZHBJ?p=preview">Plnkr</a>.</p>
 <p><a href="https://github.com/johannesjo/angular-promise-buttons/issues">Bug-reports or feature request</a> as well as any other kind of <strong>feedback is highly welcome!</strong></p>
 <h2 id="getting-started">getting started</h2>
 <p>Install it via bower</p>
@@ -152,7 +153,9 @@ $scope.success = function ()
   angularPromiseButtonsProvider.extendConfig({
     spinnerTpl: &#39;&lt;span class=&quot;btn-spinner&quot;&gt;&lt;/span&gt;&#39;,
     disableBtn: true,
-    btnLoadingClass: &#39;is-loading&#39;
+    btnLoadingClass: &#39;is-loading&#39;,
+    addClassToCurrentBtnOnly: false,
+    disableCurrentBtnOnly: false
   });
 });
 </code></pre>
@@ -180,9 +183,9 @@ $scope.success = function ()
 
 
 <!-- bower:js -->
-<script src="bower_components/angular/angular.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.11/angular-animate.min.js"></script>
-<script src="bower_components/angular-mocks/angular-mocks.js"></script>
+<script src="app//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+<script src="app//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
+<script src="app/bower_components/angular-mocks/angular-mocks.js"></script>
 <!-- endbower -->
 
 <script src="angular-promise-buttons.min.js"></script>
