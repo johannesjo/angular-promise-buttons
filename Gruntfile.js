@@ -37,7 +37,7 @@ module.exports = function (grunt)
             js: {
                 files: [
                     '<%= appConfig.app %>/**/*.js',
-                    '<%= appConfig.example %>/**/*.js',
+                    '<%= appConfig.example %>/**/*.js'
                 ],
                 tasks: [
                     'newer:jshint:all',
@@ -445,7 +445,7 @@ module.exports = function (grunt)
         md2html: {
             one_file: {
                 options: {
-                    layout: '<%= appConfig.dist %>/example/index.html',
+                    layout: '<%= appConfig.dist %>/example/index.html'
                 },
                 files: [{
                     src: ['*.md'],
@@ -562,7 +562,7 @@ module.exports = function (grunt)
     });
 
 
-    grunt.registerTask('build', function (target)
+    grunt.registerTask('build', function ()
     {
         grunt.task.run([
             'clean:dist',
@@ -587,7 +587,7 @@ module.exports = function (grunt)
         ]);
     });
 
-    grunt.registerTask('release', function (target)
+    grunt.registerTask('release', function ()
     {
         grunt.task.run([
             'test:unitSingleRun',
@@ -596,7 +596,7 @@ module.exports = function (grunt)
         ]);
     });
 
-    grunt.registerTask('ghp', function (target)
+    grunt.registerTask('ghp', function ()
     {
         grunt.task.run([
             'build',
