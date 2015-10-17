@@ -65,7 +65,9 @@ angular.module('exampleApp', [
   angularPromiseButtonsProvider.extendConfig({
     spinnerTpl: '<span class="btn-spinner"></span>',
     disableBtn: true,
-    btnLoadingClass: 'is-loading'
+    btnLoadingClass: 'is-loading',
+    addClassToCurrentBtnOnly: false,
+    disableCurrentBtnOnly: false
   });
 });
 ```
