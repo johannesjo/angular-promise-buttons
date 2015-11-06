@@ -159,6 +159,25 @@ $scope.success = function ()
   });
 });
 </code></pre>
+<h2 id="change-options-via-promise-btn-options-">change options via <code>promise-btn-options</code></h2>
+<p>You can also change all the options (<strong>but not the spinner template</strong>) by specifying the options via <code>promise-btn-options</code>:</p>
+<pre><code class="lang-html">&lt;button class=&quot;btn&quot;
+        ng-click=&quot;yourServiceCaller()&quot;
+        promise-btn-options=&quot;options&quot;
+        promise-btn=&quot;yourPromise&quot;&gt;MyBtn &lt;span&gt;Look I&#39;m nested content&lt;/span&gt;
+&lt;/button&gt;
+</code></pre>
+<p>Now you just have to assign a promise to <code>yourPromise</code>:</p>
+<pre><code class="lang-javascript">// inside some controller
+$scope.success = function ()
+{
+  $scope.successPromise = fakeFactory.method().then(...);
+  $scope.options = {
+    disableBtn: false,
+    btnLoadingClass: &#39;is-spinning&#39;
+  };
+};
+</code></pre>
 <p>Thats all the logic there is (for now). Adjusting the look and feel of the spinner can be done using your own styles.</p>
 <h2 id="-contribute-">❤ contribute ❤</h2>
 <p>I&#39;m happy for any <a href="https://github.com/johannesjo/angular-promise-buttons/issues">issue or feature request</a>, you might encounter or want to have. Even a one liner is better, than no feedback at all. Pull requests are also highly welcome. Just fork the repository, clone it and run <code>grunt serve</code> for development. Another important factor is the number of developers using and thus testing <code>angular-promise-buttons</code>. Tell your fellow programmers, <a href="http://ngmodules.org/modules/angular-promise-buttons">say that you use it on ng-modules</a>, tweet or even blog about it.</p>
@@ -183,9 +202,9 @@ $scope.success = function ()
 
 
 <!-- bower:js -->
-<script src="app//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
-<script src="app//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
-<script src="app/bower_components/angular-mocks/angular-mocks.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
+<script src="bower_components/angular-mocks/angular-mocks.js"></script>
 <!-- endbower -->
 
 <script src="angular-promise-buttons.min.js"></script>
