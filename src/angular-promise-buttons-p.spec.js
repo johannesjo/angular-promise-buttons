@@ -213,4 +213,83 @@ describe('promise-buttons directive with config', function ()
             expect(element2.attr('disabled')).toBe(undefined);
         });
     });
+
+
+    describe('with attribute options', function ()
+    {
+        var htmlWithCfg;
+        var htmlWithoutCfg;
+
+        beforeEach(function ()
+        {
+            htmlWithCfg = '<button class="btn" promise-btn-options="options" ng-click="asyncCall()" promise-btn="promise">Success after delay</button>';
+            htmlWithoutCfg = '<button class="btn" ng-click="asyncCall()" promise-btn="promise">Success after delay</button>';
+            scope.asyncCall = function ()
+            {
+                scope.promise = fakeFact.success();
+            };
+        });
+
+
+        it('should add class to currently clicked button only when option is specified', function ()
+        {
+            provider.extendConfig({
+                disableBtn: false,
+                btnLoadingClass: false
+            });
+            scope.options = {
+                disableBtn: true,
+                btnLoadingClass: 'is-loading'
+            };
+
+            var elWithCfg = $compile(htmlWithCfg)(scope);
+            var elWithoutCfg = $compile(htmlWithoutCfg)(scope);
+            scope.$digest();
+
+            scope.asyncCall = function ()
+            {
+                scope.promise = fakeFact.error();
+            };
+
+            elWithCfg.triggerHandler('click');
+            scope.$digest();
+
+            expect(elWithCfg.hasClass('is-loading')).toBe(true);
+            expect(elWithCfg.attr('disabled')).toBe('disabled');
+
+            expect(elWithoutCfg.hasClass('is-loading')).toBe(false);
+            expect(elWithoutCfg.attr('disabled')).toBe(undefined);
+        });
+
+
+        it('should add disabled attribute to currently clicked button only when option is specified', function ()
+        {
+            provider.extendConfig({
+                disableBtn: true,
+                btnLoadingClass: 'is-loading'
+            });
+            scope.options = {
+                disableBtn: false,
+                btnLoadingClass: false
+            };
+
+            var elWithCfg = $compile(htmlWithCfg)(scope);
+            var elWithoutCfg = $compile(htmlWithoutCfg)(scope);
+            scope.$digest();
+
+            scope.asyncCall = function ()
+            {
+                scope.promise = fakeFact.error();
+            };
+
+            elWithCfg.triggerHandler('click');
+            scope.$digest();
+
+            expect(elWithCfg.hasClass('is-loading')).toBe(false);
+            expect(elWithCfg.attr('disabled')).toBe(undefined);
+            //
+            expect(elWithoutCfg.hasClass('is-loading')).toBe(true);
+            expect(elWithoutCfg.attr('disabled')).toBe('disabled');
+        });
+    });
 });

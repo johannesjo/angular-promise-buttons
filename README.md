@@ -71,6 +71,29 @@ angular.module('exampleApp', [
   });
 });
 ```
+
+## change options via `promise-btn-options`
+You can also change all the options (**but not the spinner template**) by specifying the options via `promise-btn-options`:
+```html
+<button class="btn"
+        ng-click="yourServiceCaller()"
+        promise-btn-options="options"
+        promise-btn="yourPromise">MyBtn <span>Look I'm nested content</span>
+</button>
+```
+Now you just have to assign a promise to ```yourPromise```:
+```javascript
+// inside some controller
+$scope.success = function ()
+{
+  $scope.successPromise = fakeFactory.method().then(...);
+  $scope.options = {
+    disableBtn: false,
+    btnLoadingClass: 'is-spinning'
+  };
+};
+```
+
 Thats all the logic there is (for now). Adjusting the look and feel of the spinner can be done using your own styles.
 
 
