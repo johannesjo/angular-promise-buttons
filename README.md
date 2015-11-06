@@ -84,13 +84,13 @@ You can also change all the options (**but not the spinner template**) by specif
 Now you just have to assign a promise to ```yourPromise```:
 ```javascript
 // inside some controller
+$scope.options = {
+  disableBtn: false,
+  btnLoadingClass: 'is-spinning'
+};
 $scope.success = function ()
 {
   $scope.successPromise = fakeFactory.method().then(...);
-  $scope.options = {
-    disableBtn: false,
-    btnLoadingClass: 'is-spinning'
-  };
 };
 ```
 
