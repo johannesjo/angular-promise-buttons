@@ -20,12 +20,14 @@ angular.module('angularPromiseButtons')
             transclude: true,
             replace: true,
             scope: {
-                promiseBtn: '='
+                promiseBtn: '=',
+                promiseBtnOptions: '=?'
             },
             templateUrl: 'promise-btn-d.html',
             link: function (scope, el)
             {
-                var cfg = angularPromiseButtons.config;
+                var providerCfg = angularPromiseButtons.config;
+                var cfg = providerCfg;
 
                 var loading = function ()
                 {
@@ -66,7 +68,16 @@ angular.module('angularPromiseButtons')
                     });
                 }
 
+                // watch options
+                scope.$watch('promiseBtnOptions', function (newVal)
+                {
+                    if (angular.isObject(newVal)) {
+                        cfg = angular.extend({}, providerCfg, newVal);
+                    }
+                }, true);
 
+
+                // watch promise to resolve or fail
                 scope.$watch(function ()
                 {
                     return scope.promiseBtn;
