@@ -169,13 +169,13 @@ $scope.success = function ()
 </code></pre>
 <p>Now you just have to assign a promise to <code>yourPromise</code>:</p>
 <pre><code class="lang-javascript">// inside some controller
+$scope.options = {
+  disableBtn: false,
+  btnLoadingClass: &#39;is-spinning&#39;
+};
 $scope.success = function ()
 {
   $scope.successPromise = fakeFactory.method().then(...);
-  $scope.options = {
-    disableBtn: false,
-    btnLoadingClass: &#39;is-spinning&#39;
-  };
 };
 </code></pre>
 <p>Thats all the logic there is (for now). Adjusting the look and feel of the spinner can be done using your own styles.</p>
