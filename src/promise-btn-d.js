@@ -71,9 +71,15 @@ angular.module('angularPromiseButtons')
                     return scope.promiseBtn;
                 }, function (mVal)
                 {
+                    // for regular promises
                     if (mVal && mVal.then) {
                         loading();
                         mVal.finally(loadingFinished);
+                    }
+                    // for $resource
+                    else if (mVal && mVal.$promise) {
+                        loading();
+                        mVal.$promise.finally(loadingFinished);
                     }
                 });
             }

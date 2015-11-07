@@ -181,6 +181,30 @@ describe('promise-buttons directive', function ()
             expect(scope.v.promiseIndex).toBe(5);
             expect(element.hasClass('is-loading')).toBeFalsy();
         });
+
+        it('should work with $resource promises', inject(function ($q)
+        {
+            var mockBagelApiService = {
+                query: function ()
+                {
+                    var queryDeferred = $q.defer();
+                    return {$promise: queryDeferred.promise};
+                }
+            };
+            scope.asyncCall = function ()
+            {
+                scope.promise = mockBagelApiService.query();
+            };
+
+
+            element.triggerHandler('click');
+            scope.$digest();
+            expect(element.hasClass('is-loading')).toBeTruthy();
+            expect(element.attr('disabled')).toBe('disabled');
+            $timeout.flush();
+            expect(element.hasClass('is-loading')).toBeTruthy();
+            expect(element.attr('disabled')).toBe('disabled');
+        }));
     });
 
     describe('a $http promise on click', function ()
