@@ -5,6 +5,7 @@
         "type": "git",
         "url": "https://github.com/johannesjo/angular-promise-buttons.git"
     },
+    "main": "dist/angular-promise-buttons.js",
     "devDependencies": {
         "google-cdn": "^1.0.0",
         "google-cdn-data": "^0.1.14",
