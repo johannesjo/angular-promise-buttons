@@ -39,9 +39,9 @@ Using the buttons is easy. Just hand over the promise in question to the promise
 Now you just have to assign a promise to ```yourPromise```:
 ```javascript
 // inside some controller
-$scope.success = function ()
+$scope.yourServiceCaller = function ()
 {
-  $scope.successPromise = fakeFactory.method().then(...);
+  $scope.yourPromise = fakeFactory.method().then(...);
 };
 ```
 
@@ -88,9 +88,9 @@ $scope.options = {
   disableBtn: false,
   btnLoadingClass: 'is-spinning'
 };
-$scope.success = function ()
+$scope.yourServiceCaller = function ()
 {
-  $scope.successPromise = fakeFactory.method().then(...);
+  $scope.yourPromise = fakeFactory.method().then(...);
 };
 ```
 
