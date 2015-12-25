@@ -46,6 +46,7 @@ angular.module('exampleApp', [
         {
             $scope.successPromise = false;
             $scope.successPromise = fakeFac.success();
+            return $scope.successPromise;
         };
 
         $scope.error = function ()
