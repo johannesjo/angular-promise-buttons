@@ -73,6 +73,10 @@ angular.module('exampleApp', [
         {
             $scope.submitPromise = fakeFac.success();
         };
+        $scope.submitDirectlyReturnPromise = function ()
+        {
+            return fakeFac.success();
+        };
         $scope.chain = function ()
         {
             $scope.v.promiseIndex = 0;

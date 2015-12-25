@@ -51,3 +51,12 @@
         ng-click="chain()"
         promise-btn>For promise chain
 </button>
+
+<h3>ngSubmit only inside form</h3>
+<form ng-submit="submitDirectlyReturnPromise()"
+      promise-btn>
+    <button class="btn"
+            type="submit">Submit promise
+    </button>
+    <button type="button">I'm just a button</button>
+</form>

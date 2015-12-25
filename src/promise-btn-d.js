@@ -19,25 +19,26 @@ angular.module('angularPromiseButtons')
                 var providerCfg = angularPromiseButtons.config;
                 var cfg = providerCfg;
                 var promiseWatcher;
+                var btnEl;
 
 
                 function handleLoading()
                 {
                     if (cfg.btnLoadingClass && !cfg.addClassToCurrentBtnOnly) {
-                        el.addClass(cfg.btnLoadingClass);
+                        btnEl.addClass(cfg.btnLoadingClass);
                     }
                     if (cfg.disableBtn && !cfg.disableCurrentBtnOnly) {
-                        el.attr('disabled', 'disabled');
+                        btnEl.attr('disabled', 'disabled');
                     }
                 }
 
                 function handleLoadingFinished()
                 {
                     if (cfg.btnLoadingClass) {
-                        el.removeClass(cfg.btnLoadingClass);
+                        btnEl.removeClass(cfg.btnLoadingClass);
                     }
                     if (cfg.disableBtn) {
-                        el.removeAttr('disabled');
+                        btnEl.removeAttr('disabled');
                     }
                 }
 
@@ -59,77 +60,107 @@ angular.module('angularPromiseButtons')
                     });
                 }
 
-
                 function getCallbacks(expression)
                 {
                     return expression
+                    // split by ; to get different functions if any
                         .split(';')
                         .map(function (callback)
                         {
+                            // return getter function
                             return $parse(callback);
                         });
                 }
 
-                // INIT
-                el.append(cfg.spinnerTpl);
+                function initForButtonEl()
+                {
+                    btnEl.append(cfg.spinnerTpl);
 
-                // handle current button only options via click
-                if (cfg.addClassToCurrentBtnOnly) {
-                    el.on(CLICK_EVENT, function ()
-                    {
-                        el.addClass(cfg.btnLoadingClass);
-                    });
-                }
-
-                if (cfg.disableCurrentBtnOnly) {
-                    el.on(CLICK_EVENT, function ()
-                    {
-                        el.attr('disabled', 'disabled');
-                    });
-                }
-
-                // check if there is any value given via attrs.promiseBtn
-                if (!attrs.promiseBtn) {
-
-                    // handle ngClick function directly returning a promise
-                    if (attrs.hasOwnProperty(CLICK_ATTR)) {
-
-                        // we need to use evalAsync here, as
-                        // otherwise the click event won't be ready to be replaced
-                        scope.$evalAsync(function ()
+                    // handle current button only options via click
+                    if (cfg.addClassToCurrentBtnOnly) {
+                        btnEl.on(CLICK_EVENT, function ()
                         {
-                            var callbacks = getCallbacks(attrs[CLICK_ATTR]);
+                            btnEl.addClass(cfg.btnLoadingClass);
+                        });
+                    }
 
-                            // unbind original click event
-                            el.unbind(CLICK_EVENT);
+                    if (cfg.disableCurrentBtnOnly) {
+                        btnEl.on(CLICK_EVENT, function ()
+                        {
+                            btnEl.attr('disabled', 'disabled');
+                        });
+                    }
+                }
 
-                            // rebind, but this time watching it's return value
-                            el.bind(CLICK_EVENT, function ()
+                function initHandlingOfViewFunctionsReturningAPromise(eventToHandle, attrToParse)
+                {
+                    // we need to use evalAsync here, as
+                    // otherwise the click or submit event
+                    // won't be ready to be replaced
+                    scope.$evalAsync(function ()
+                    {
+                        var callbacks = getCallbacks(attrs[attrToParse]);
+
+                        // unbind original click event
+                        el.unbind(eventToHandle);
+
+                        // rebind, but this time watching it's return value
+                        el.bind(eventToHandle, function ()
+                        {
+                            // Make sure we run the $digest cycle
+                            scope.$apply(function ()
                             {
-                                // Make sure we run the $digest cycle
-                                scope.$apply(function ()
+                                callbacks.forEach(function (cb)
                                 {
-                                    callbacks.forEach(function (cb)
-                                    {
-                                        // execute function on parent scope
-                                        // as we're in an isolate scope here
-                                        var promise = cb(scope.$parent, {$event: CLICK_EVENT});
+                                    // execute function on parent scope
+                                    // as we're in an isolate scope here
+                                    var promise = cb(scope.$parent, {$event: eventToHandle});
 
-                                        // only init watcher if not done before
-                                        if (!promiseWatcher) {
-                                            promiseWatcher = initPromiseWatcher(function ()
-                                            {
-                                                return promise;
-                                            });
-                                        }
-                                    });
+                                    // only init watcher if not done before
+                                    if (!promiseWatcher) {
+                                        promiseWatcher = initPromiseWatcher(function ()
+                                        {
+                                            return promise;
+                                        });
+                                    }
                                 });
                             });
                         });
+                    });
+                }
+
+                function getSubmitBtnChildren(el)
+                {
+                    var submitBtnEls = [];
+                    var allButtonEls = el.find('button');
+
+                    for (var i = 0; i < allButtonEls.length; i++) {
+                        var btnEl = allButtonEls[i];
+                        if (angular.element(btnEl).attr('type') === 'submit') {
+                            submitBtnEls.push(btnEl);
+                        }
+                    }
+                    return angular.element(submitBtnEls);
+                }
+
+
+                // INIT
+                // check if there is any value given via attrs.promiseBtn
+                if (!attrs.promiseBtn) {
+                    // handle ngClick function directly returning a promise
+                    if (attrs.hasOwnProperty(CLICK_ATTR)) {
+                        btnEl = el;
+                        initForButtonEl();
+                        initHandlingOfViewFunctionsReturningAPromise(CLICK_EVENT, CLICK_ATTR);
                     } else if (attrs.hasOwnProperty(SUBMIT_ATTR)) {
-                        // TODO handle submit
+                        btnEl = getSubmitBtnChildren(el);
+                        initForButtonEl();
+                        initHandlingOfViewFunctionsReturningAPromise(SUBMIT_EVENT, SUBMIT_ATTR);
                     }
                 } else {
+                    btnEl = el;
+                    initForButtonEl();
+
                     // handle promise passed directly via attribute as variable
                     initPromiseWatcher(function ()
                     {
