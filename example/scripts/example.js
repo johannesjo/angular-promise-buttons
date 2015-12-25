@@ -46,6 +46,12 @@ angular.module('exampleApp', [
         {
             $scope.successPromise = false;
             $scope.successPromise = fakeFac.success();
+            return $scope.successPromise;
+        };
+
+        $scope.successDirectlyReturnedPromise = function ()
+        {
+            return fakeFac.success();
         };
 
         $scope.error = function ()
@@ -67,6 +73,10 @@ angular.module('exampleApp', [
         {
             $scope.submitPromise = fakeFac.success();
         };
+        $scope.submitDirectlyReturnPromise = function ()
+        {
+            return fakeFac.success();
+        };
         $scope.chain = function ()
         {
             $scope.v.promiseIndex = 0;
@@ -75,6 +85,8 @@ angular.module('exampleApp', [
                 .then($scope.countChain)
                 .then($scope.countChain)
                 .then($scope.countChain);
+
+            return $scope.chainedPromises;
         };
         $scope.countChain = function ()
         {

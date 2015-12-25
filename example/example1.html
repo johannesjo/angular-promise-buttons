@@ -41,3 +41,22 @@
             promise-btn="submitPromise">Submit
     </button>
 </form>
+
+<h3>ngClick only</h3>
+<button class="btn"
+        ng-click="successDirectlyReturnedPromise()"
+        promise-btn>Success after delay
+</button>
+<button class="btn"
+        ng-click="chain()"
+        promise-btn>For promise chain
+</button>
+
+<h3>ngSubmit only inside form</h3>
+<form ng-submit="submitDirectlyReturnPromise()"
+      promise-btn>
+    <button class="btn"
+            type="submit">Submit promise
+    </button>
+    <button type="button">I'm just a button</button>
+</form>

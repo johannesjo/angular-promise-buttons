@@ -8,7 +8,7 @@ angular-promise-buttons
 
 *Chilled Buttons for AngularJS*
 
-There are cool loading buttons out there for angular. Only thing which annoys me, is that you (most of the times) have to manually trigger their loading state via a boolean which leads to a bit of repetition, declaring those again and again. ```angular-promise-buttons``` exists to take away some of that, by handling the loading state directly by passing the promise. Saves you two lines of code every time. Check out the [DEMO](http://johannesjo.github.io/angular-promise-buttons/#demo)!
+There are cool loading buttons out there for angular. Only thing which annoys me, is that you (most of the times) have to manually trigger their loading state via a boolean which leads to a bit of repetition, declaring those again and again. ```angular-promise-buttons``` exists to take away some of that, by handling the loading state directly by passing the promise. Saves you at least two lines of code every time. Check out the [DEMO](http://johannesjo.github.io/angular-promise-buttons/#demo)!
 
 Also you can play with the code on [Plnkr](http://plnkr.co/edit/yKrlohXVL15fRjTjZHBJ?p=preview).
 
@@ -31,10 +31,8 @@ angular.module('yourApp',[
 Using the buttons is easy. Just hand over the promise in question to the promiseBtn-directive and you're good to go:
 
 ```html
-<button class="btn"
-        ng-click="yourServiceCaller()"
-        promise-btn="yourPromise">MyBtn <span>Look I'm nested content</span>
-</button>
+<button ng-click="yourServiceCaller()"
+        promise-btn="yourPromise">MyBtn</button>
 ```
 Now you just have to assign a promise to ```yourPromise```:
 ```javascript
@@ -42,6 +40,34 @@ Now you just have to assign a promise to ```yourPromise```:
 $scope.yourServiceCaller = function ()
 {
   $scope.yourPromise = fakeFactory.method().then(...);
+};
+```
+You can also directly return the promise via the function passed to `ng-click`:
+```html
+<button ng-click="yourServiceCaller()"
+        promise-btn>Click me to spin!</button>
+```
+
+```javascript
+// inside some controller
+$scope.yourServiceCaller = function ()
+{
+  return fakeFactory.method().then(...);
+};
+```
+Or for `ng-submit`:
+```html
+<form ng-submit="yourServiceCaller()"
+      promise-btn>
+  <button type="submit">MyBtn</button>
+</form>
+```
+
+```javascript
+// inside some controller
+$scope.yourServiceCaller = function ()
+{
+  return fakeFactory.method().then(...);
 };
 ```
 
