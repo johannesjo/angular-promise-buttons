@@ -243,3 +243,4 @@ angular.module('angularPromiseButtons')
             }
         };
     });
+
