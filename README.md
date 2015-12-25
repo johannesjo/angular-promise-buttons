@@ -59,7 +59,7 @@ Or for `ng-submit`:
 ```html
 <form ng-submit="yourServiceCaller()"
       promise-btn>
-  <button>MyBtn</button>
+  <button type="submit">MyBtn</button>
 </form>
 ```
 
