@@ -74,9 +74,9 @@ describe('promise-buttons directive with config', function ()
             element = $compile(html)(scope);
             scope.$digest();
 
-            expect(angular.element(element.find('span')[1]).hasClass('btn-spinner'))
+            expect(angular.element(element.find('span')[0]).hasClass('btn-spinner'))
                 .toBeFalsy();
-            expect(angular.element(element.find('span')[1]).hasClass('CLASS-SPANNER'))
+            expect(angular.element(element.find('span')[0]).hasClass('CLASS-SPANNER'))
                 .toBeTruthy();
 
         });
