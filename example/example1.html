@@ -44,6 +44,10 @@
 
 <h3>ngClick only</h3>
 <button class="btn"
-        ng-click="success()"
-        promise-btn>Ng-Click-Only
+        ng-click="successDirectlyReturnedPromise()"
+        promise-btn>Success after delay
+</button>
+<button class="btn"
+        ng-click="chain()"
+        promise-btn>For promise chain
 </button>
