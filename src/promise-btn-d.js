@@ -19,10 +19,9 @@ angular.module('angularPromiseButtons')
                 var providerCfg = angularPromiseButtons.config;
                 var cfg = providerCfg;
                 var promiseWatcher;
-                var btnEl;
 
 
-                function handleLoading()
+                function handleLoading(btnEl)
                 {
                     if (cfg.btnLoadingClass && !cfg.addClassToCurrentBtnOnly) {
                         btnEl.addClass(cfg.btnLoadingClass);
@@ -32,7 +31,7 @@ angular.module('angularPromiseButtons')
                     }
                 }
 
-                function handleLoadingFinished()
+                function handleLoadingFinished(btnEl)
                 {
                     if (cfg.btnLoadingClass) {
                         btnEl.removeClass(cfg.btnLoadingClass);
@@ -42,20 +41,26 @@ angular.module('angularPromiseButtons')
                     }
                 }
 
-                function initPromiseWatcher(watchExpressionForPromise)
+                function initPromiseWatcher(watchExpressionForPromise, btnEl)
                 {
                     // watch promise to resolve or fail
                     scope.$watch(watchExpressionForPromise, function (mVal)
                     {
                         // for regular promises
                         if (mVal && mVal.then) {
-                            handleLoading();
-                            mVal.finally(handleLoadingFinished);
+                            handleLoading(btnEl);
+                            mVal.finally(function ()
+                            {
+                                handleLoadingFinished(btnEl);
+                            });
                         }
                         // for $resource
                         else if (mVal && mVal.$promise) {
-                            handleLoading();
-                            mVal.$promise.finally(handleLoadingFinished);
+                            handleLoading(btnEl);
+                            mVal.$promise.finally(function ()
+                            {
+                                handleLoadingFinished(btnEl);
+                            });
                         }
                     });
                 }
@@ -72,10 +77,13 @@ angular.module('angularPromiseButtons')
                         });
                 }
 
-                function initForButtonEl()
+                function appendSpinnerTpl(btnEl)
                 {
                     btnEl.append(cfg.spinnerTpl);
+                }
 
+                function addHandlersForCurrentBtnOnly(btnEl)
+                {
                     // handle current button only options via click
                     if (cfg.addClassToCurrentBtnOnly) {
                         btnEl.on(CLICK_EVENT, function ()
@@ -92,7 +100,7 @@ angular.module('angularPromiseButtons')
                     }
                 }
 
-                function initHandlingOfViewFunctionsReturningAPromise(eventToHandle, attrToParse)
+                function initHandlingOfViewFunctionsReturningAPromise(eventToHandle, attrToParse, btnEl)
                 {
                     // we need to use evalAsync here, as
                     // otherwise the click or submit event
@@ -121,7 +129,7 @@ angular.module('angularPromiseButtons')
                                         promiseWatcher = initPromiseWatcher(function ()
                                         {
                                             return promise;
-                                        });
+                                        }, btnEl);
                                     }
                                 });
                             });
@@ -149,23 +157,29 @@ angular.module('angularPromiseButtons')
                 if (!attrs.promiseBtn) {
                     // handle ngClick function directly returning a promise
                     if (attrs.hasOwnProperty(CLICK_ATTR)) {
-                        btnEl = el;
-                        initForButtonEl();
-                        initHandlingOfViewFunctionsReturningAPromise(CLICK_EVENT, CLICK_ATTR);
-                    } else if (attrs.hasOwnProperty(SUBMIT_ATTR)) {
-                        btnEl = getSubmitBtnChildren(el);
-                        initForButtonEl();
-                        initHandlingOfViewFunctionsReturningAPromise(SUBMIT_EVENT, SUBMIT_ATTR);
+                        appendSpinnerTpl(el);
+                        addHandlersForCurrentBtnOnly(el);
+                        initHandlingOfViewFunctionsReturningAPromise(CLICK_EVENT, CLICK_ATTR, el);
                     }
-                } else {
-                    btnEl = el;
-                    initForButtonEl();
+                    // handle ngSubmit function directly returning a promise
+                    else if (attrs.hasOwnProperty(SUBMIT_ATTR)) {
+                        // get child submits for form elements
+                        var btnElements = getSubmitBtnChildren(el);
 
+                        appendSpinnerTpl(btnElements);
+                        addHandlersForCurrentBtnOnly(btnElements);
+                        initHandlingOfViewFunctionsReturningAPromise(SUBMIT_EVENT, SUBMIT_ATTR, btnElements);
+                    }
+                }
+                // handle promises passed via scope.promiseBtn
+                else {
+                    appendSpinnerTpl(el);
+                    addHandlersForCurrentBtnOnly(el);
                     // handle promise passed directly via attribute as variable
                     initPromiseWatcher(function ()
                     {
                         return scope.promiseBtn;
-                    });
+                    }, el);
                 }
 
 
