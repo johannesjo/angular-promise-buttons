@@ -1,99 +1,198 @@
 angular.module('angularPromiseButtons', [
 ]);
 
-angular.module('angularPromiseButtons').run(['$templateCache', function($templateCache) {
-  'use strict';
-
-  $templateCache.put('promise-btn-d.html',
-    "<button ng-transclude></button>"
-  );
-
-}]);
-
 angular.module('angularPromiseButtons')
-    .directive('promiseBtn', ['angularPromiseButtons', function (angularPromiseButtons)
+    .directive('promiseBtn', ['angularPromiseButtons', '$parse', function (angularPromiseButtons, $parse)
     {
         'use strict';
 
+        var CLICK_EVENT = 'click';
+        var CLICK_ATTR = 'ngClick';
+        var SUBMIT_EVENT = 'submit';
+        var SUBMIT_ATTR = 'ngSubmit';
+
         return {
             restrict: 'EA',
-            transclude: true,
-            replace: true,
             scope: {
                 promiseBtn: '=',
                 promiseBtnOptions: '=?'
             },
-            templateUrl: 'promise-btn-d.html',
-            link: function (scope, el)
+            link: function (scope, el, attrs)
             {
                 var providerCfg = angularPromiseButtons.config;
                 var cfg = providerCfg;
+                var promiseWatcher;
 
-                var loading = function ()
+
+                function handleLoading(btnEl)
                 {
                     if (cfg.btnLoadingClass && !cfg.addClassToCurrentBtnOnly) {
-                        el.addClass(cfg.btnLoadingClass);
+                        btnEl.addClass(cfg.btnLoadingClass);
                     }
                     if (cfg.disableBtn && !cfg.disableCurrentBtnOnly) {
-                        el.attr('disabled', 'disabled');
+                        btnEl.attr('disabled', 'disabled');
                     }
-                };
+                }
 
-                var loadingFinished = function ()
+                function handleLoadingFinished(btnEl)
                 {
                     if (cfg.btnLoadingClass) {
-                        el.removeClass(cfg.btnLoadingClass);
+                        btnEl.removeClass(cfg.btnLoadingClass);
                     }
                     if (cfg.disableBtn) {
-                        el.removeAttr('disabled');
+                        btnEl.removeAttr('disabled');
                     }
-                };
+                }
 
-
-                // init
-                el.append(cfg.spinnerTpl);
-
-                // handle current button only options via click
-                if (cfg.addClassToCurrentBtnOnly) {
-                    el.on('click', function ()
+                function initPromiseWatcher(watchExpressionForPromise, btnEl)
+                {
+                    // watch promise to resolve or fail
+                    scope.$watch(watchExpressionForPromise, function (mVal)
                     {
-                        el.addClass(cfg.btnLoadingClass);
+                        // for regular promises
+                        if (mVal && mVal.then) {
+                            handleLoading(btnEl);
+                            mVal.finally(function ()
+                            {
+                                handleLoadingFinished(btnEl);
+                            });
+                        }
+                        // for $resource
+                        else if (mVal && mVal.$promise) {
+                            handleLoading(btnEl);
+                            mVal.$promise.finally(function ()
+                            {
+                                handleLoadingFinished(btnEl);
+                            });
+                        }
                     });
                 }
 
-                if (cfg.disableCurrentBtnOnly) {
-                    el.on('click', function ()
+                function getCallbacks(expression)
+                {
+                    return expression
+                    // split by ; to get different functions if any
+                        .split(';')
+                        .map(function (callback)
+                        {
+                            // return getter function
+                            return $parse(callback);
+                        });
+                }
+
+                function appendSpinnerTpl(btnEl)
+                {
+                    btnEl.append(cfg.spinnerTpl);
+                }
+
+                function addHandlersForCurrentBtnOnly(btnEl)
+                {
+                    // handle current button only options via click
+                    if (cfg.addClassToCurrentBtnOnly) {
+                        btnEl.on(CLICK_EVENT, function ()
+                        {
+                            btnEl.addClass(cfg.btnLoadingClass);
+                        });
+                    }
+
+                    if (cfg.disableCurrentBtnOnly) {
+                        btnEl.on(CLICK_EVENT, function ()
+                        {
+                            btnEl.attr('disabled', 'disabled');
+                        });
+                    }
+                }
+
+                function initHandlingOfViewFunctionsReturningAPromise(eventToHandle, attrToParse, btnEl)
+                {
+                    // we need to use evalAsync here, as
+                    // otherwise the click or submit event
+                    // won't be ready to be replaced
+                    scope.$evalAsync(function ()
                     {
-                        el.attr('disabled', 'disabled');
+                        var callbacks = getCallbacks(attrs[attrToParse]);
+
+                        // unbind original click event
+                        el.unbind(eventToHandle);
+
+                        // rebind, but this time watching it's return value
+                        el.bind(eventToHandle, function ()
+                        {
+                            // Make sure we run the $digest cycle
+                            scope.$apply(function ()
+                            {
+                                callbacks.forEach(function (cb)
+                                {
+                                    // execute function on parent scope
+                                    // as we're in an isolate scope here
+                                    var promise = cb(scope.$parent, {$event: eventToHandle});
+
+                                    // only init watcher if not done before
+                                    if (!promiseWatcher) {
+                                        promiseWatcher = initPromiseWatcher(function ()
+                                        {
+                                            return promise;
+                                        }, btnEl);
+                                    }
+                                });
+                            });
+                        });
                     });
                 }
 
-                // watch options
+                function getSubmitBtnChildren(el)
+                {
+                    var submitBtnEls = [];
+                    var allButtonEls = el.find('button');
+
+                    for (var i = 0; i < allButtonEls.length; i++) {
+                        var btnEl = allButtonEls[i];
+                        if (angular.element(btnEl).attr('type') === 'submit') {
+                            submitBtnEls.push(btnEl);
+                        }
+                    }
+                    return angular.element(submitBtnEls);
+                }
+
+
+                // INIT
+                // check if there is any value given via attrs.promiseBtn
+                if (!attrs.promiseBtn) {
+                    // handle ngClick function directly returning a promise
+                    if (attrs.hasOwnProperty(CLICK_ATTR)) {
+                        appendSpinnerTpl(el);
+                        addHandlersForCurrentBtnOnly(el);
+                        initHandlingOfViewFunctionsReturningAPromise(CLICK_EVENT, CLICK_ATTR, el);
+                    }
+                    // handle ngSubmit function directly returning a promise
+                    else if (attrs.hasOwnProperty(SUBMIT_ATTR)) {
+                        // get child submits for form elements
+                        var btnElements = getSubmitBtnChildren(el);
+
+                        appendSpinnerTpl(btnElements);
+                        addHandlersForCurrentBtnOnly(btnElements);
+                        initHandlingOfViewFunctionsReturningAPromise(SUBMIT_EVENT, SUBMIT_ATTR, btnElements);
+                    }
+                }
+                // handle promises passed via scope.promiseBtn
+                else {
+                    appendSpinnerTpl(el);
+                    addHandlersForCurrentBtnOnly(el);
+                    // handle promise passed directly via attribute as variable
+                    initPromiseWatcher(function ()
+                    {
+                        return scope.promiseBtn;
+                    }, el);
+                }
+
+
+                // watch and update options being changed
                 scope.$watch('promiseBtnOptions', function (newVal)
                 {
                     if (angular.isObject(newVal)) {
                         cfg = angular.extend({}, providerCfg, newVal);
                     }
                 }, true);
-
-
-                // watch promise to resolve or fail
-                scope.$watch(function ()
-                {
-                    return scope.promiseBtn;
-                }, function (mVal)
-                {
-                    // for regular promises
-                    if (mVal && mVal.then) {
-                        loading();
-                        mVal.finally(loadingFinished);
-                    }
-                    // for $resource
-                    else if (mVal && mVal.$promise) {
-                        loading();
-                        mVal.$promise.finally(loadingFinished);
-                    }
-                });
             }
         };
     }]);
@@ -144,3 +243,4 @@ angular.module('angularPromiseButtons')
             }
         };
     });
+

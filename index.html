@@ -108,11 +108,11 @@
 <div class="container">
     <p><a href="http://waffle.io/johannesjo/angular-promise-buttons"><img src="https://badge.waffle.io/johannesjo/angular-promise-buttons.svg?label=ready&amp;title=Ready" alt="Stories in Ready"></a>
 <a href="http://waffle.io/johannesjo/angular-promise-buttons"><img src="https://badge.waffle.io/johannesjo/angular-promise-buttons.svg?label=in%20progress&amp;title=In%20Progress" alt="Stories in progress"></a>
-<a href="https://travis-ci.org/johannesjo/angular-promise-buttons"><img src="https://travis-ci.org/johannesjo/angular-promise-buttons.svg" alt="Build Status"></a>
+<a href="https://travis-ci.org/johannesjo/angular-promise-buttons?branch=master"><img src="https://travis-ci.org/johannesjo/angular-promise-buttons.svg" alt="Build Status"></a>
 <a href="https://coveralls.io/r/johannesjo/angular-promise-buttons?branch=master"><img src="https://coveralls.io/repos/johannesjo/angular-promise-buttons/badge.svg?branch=master" alt="Coverage Status"></a></p>
 <h1 id="angular-promise-buttons">angular-promise-buttons</h1>
 <p><em>Chilled Buttons for AngularJS</em></p>
-<p>There are cool loading buttons out there for angular. Only thing which annoys me, is that you (most of the times) have to manually trigger their loading state via a boolean which leads to a bit of repetition, declaring those again and again. <code>angular-promise-buttons</code> exists to take away some of that, by handling the loading state directly by passing the promise. Saves you two lines of code every time. Check out the <a href="http://johannesjo.github.io/angular-promise-buttons/#demo">DEMO</a>!</p>
+<p>There are cool loading buttons out there for angular. Only thing which annoys me, is that you (most of the times) have to manually trigger their loading state via a boolean which leads to a bit of repetition, declaring those again and again. <code>angular-promise-buttons</code> exists to take away some of that, by handling the loading state directly by passing the promise. Saves you at least two lines of code every time. Check out the <a href="http://johannesjo.github.io/angular-promise-buttons/#demo">DEMO</a>!</p>
 <p>Also you can play with the code on <a href="http://plnkr.co/edit/yKrlohXVL15fRjTjZHBJ?p=preview">Plnkr</a>.</p>
 <p><a href="https://github.com/johannesjo/angular-promise-buttons/issues">Bug-reports or feature request</a> as well as any other kind of <strong>feedback is highly welcome!</strong></p>
 <h2 id="getting-started">getting started</h2>
@@ -123,16 +123,36 @@
   &#39;angularPromiseButtons&#39;
 ]);
 </code></pre><p>Using the buttons is easy. Just hand over the promise in question to the promiseBtn-directive and you&#39;re good to go:</p>
-<pre><code class="lang-html">&lt;button class=&quot;btn&quot;
-        ng-click=&quot;yourServiceCaller()&quot;
-        promise-btn=&quot;yourPromise&quot;&gt;MyBtn &lt;span&gt;Look I&#39;m nested content&lt;/span&gt;
-&lt;/button&gt;
+<pre><code class="lang-html">&lt;button ng-click=&quot;yourServiceCaller()&quot;
+        promise-btn=&quot;yourPromise&quot;&gt;MyBtn&lt;/button&gt;
 </code></pre>
 <p>Now you just have to assign a promise to <code>yourPromise</code>:</p>
 <pre><code class="lang-javascript">// inside some controller
-$scope.success = function ()
+$scope.yourServiceCaller = function ()
 {
-  $scope.successPromise = fakeFactory.method().then(...);
+  $scope.yourPromise = fakeFactory.method().then(...);
+};
+</code></pre>
+<p>You can also directly return the promise via the function passed to <code>ng-click</code>:</p>
+<pre><code class="lang-html">&lt;button ng-click=&quot;yourServiceCaller()&quot;
+        promise-btn&gt;Click me to spin!&lt;/button&gt;
+</code></pre>
+<pre><code class="lang-javascript">// inside some controller
+$scope.yourServiceCaller = function ()
+{
+  return fakeFactory.method().then(...);
+};
+</code></pre>
+<p>Or for <code>ng-submit</code>:</p>
+<pre><code class="lang-html">&lt;form ng-submit=&quot;yourServiceCaller()&quot;
+      promise-btn&gt;
+  &lt;button type=&quot;submit&quot;&gt;MyBtn&lt;/button&gt;
+&lt;/form&gt;
+</code></pre>
+<pre><code class="lang-javascript">// inside some controller
+$scope.yourServiceCaller = function ()
+{
+  return fakeFactory.method().then(...);
 };
 </code></pre>
 <h2 id="styling-the-button">styling the button</h2>
@@ -173,9 +193,9 @@ $scope.options = {
   disableBtn: false,
   btnLoadingClass: &#39;is-spinning&#39;
 };
-$scope.success = function ()
+$scope.yourServiceCaller = function ()
 {
-  $scope.successPromise = fakeFactory.method().then(...);
+  $scope.yourPromise = fakeFactory.method().then(...);
 };
 </code></pre>
 <p>Thats all the logic there is (for now). Adjusting the look and feel of the spinner can be done using your own styles.</p>
