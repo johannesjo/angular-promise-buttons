@@ -42,8 +42,9 @@ angular.module('exampleApp', [
         $scope.v = {
             promiseIndex: 0
         };
-        $scope.success = function ()
+        $scope.success = function ($event)
         {
+            console.log($event);
             $scope.successPromise = false;
             $scope.successPromise = fakeFac.success();
             return $scope.successPromise;
