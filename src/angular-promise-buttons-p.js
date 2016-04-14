@@ -15,15 +15,15 @@ angular.module('angularPromiseButtons')
             addClassToCurrentBtnOnly: false,
             disableCurrentBtnOnly: false,
             defaultHtml: null,
-            onComplete: null,
-            onSuccess: null,
-            onError: null,
+            onCompleteHandlerFunction: null,
             onSuccessConfig: {
+                handlerFunction: null,
                 resultWaitTime: 0,
                 resultHtml: 'Success',
                 resultCssClass: 'loading-success'
             },
             onErrorConfig: {
+                handlerFunction: null,
                 resultWaitTime: 0,
                 resultHtml: 'Error',
                 resultCssClass: 'loading-error'

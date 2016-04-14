@@ -35,19 +35,19 @@ angular.module('angularPromiseButtons')
                     }
                 }
 
-                function handleLoadingFinished(btnEl, defaultHtml, onEndFn, onEndConfig)
+                function handleLoadingFinished(btnEl, defaultHtml, onEndConfig)
                 {
                     removeLoadingState(btnEl);
 
                     //OnSuccess or OnError
-                    if (onEndFn && typeof onEndFn === 'function')
+                    if (onEndConfig.handlerFunction && typeof onEndConfig.handlerFunction === 'function')
                     {
-                        onEndFn();
+                        onEndConfig.handlerFunction();
                     }
 
-                    if (cfg.onComplete && typeof cfg.onComplete === 'function')
+                    if (cfg.onCompleteHandlerFunction && typeof cfg.onCompleteHandlerFunction === 'function')
                     {
-                        cfg.onComplete();
+                        cfg.onCompleteHandlerFunction();
                     }
 
                     var waitTime = 0;
@@ -124,10 +124,10 @@ angular.module('angularPromiseButtons')
                             setLoadingState(btnEl);
                             initPromise.then(
                                 function() {
-                                    handleLoadingFinished(btnEl, defaultHtml, cfg.onSuccess, cfg.onSuccessConfig);
+                                    handleLoadingFinished(btnEl, defaultHtml, cfg.onSuccessConfig);
                                 },
                                 function() {
-                                    handleLoadingFinished(btnEl, defaultHtml, cfg.onError, cfg.onErrorConfig);
+                                    handleLoadingFinished(btnEl, defaultHtml, cfg.onErrorConfig);
                                 });
                         }
                     });

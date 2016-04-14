@@ -107,14 +107,18 @@ angular.module('exampleApp', [
         console.log($scope.functionMessages);
 
         $scope.onCompletionFunctionOptions = {
-            onComplete: function () {
+            onCompleteHandlerFunction: function () {
                 $scope.functionMessages.push("Completed");
             },
-            onSuccess: function () {
-                $scope.functionMessages.push("Succeeded");
+            onSuccessConfig: {
+                handlerFunction: function() {
+                    $scope.functionMessages.push("Succeeded");
+                }
             },
-            onError: function () {
-                $scope.functionMessages.push("Failed");
+            onErrorConfig: {
+                handlerFunction: function() { 
+                    $scope.functionMessages.push("Failed");
+                }
             }
         }
 
