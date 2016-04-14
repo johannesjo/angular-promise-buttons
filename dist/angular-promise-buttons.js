@@ -2,7 +2,7 @@ angular.module('angularPromiseButtons', [
 ]);
 
 angular.module('angularPromiseButtons')
-    .directive('promiseBtn', ['angularPromiseButtons', '$parse', function (angularPromiseButtons, $parse)
+    .directive('promiseBtn', ['angularPromiseButtons', '$parse', '$timeout', function (angularPromiseButtons, $parse, $timeout)
     {
         'use strict';
 
@@ -23,8 +23,7 @@ angular.module('angularPromiseButtons')
                 var cfg = providerCfg;
                 var promiseWatcher;
 
-
-                function handleLoading(btnEl)
+                function setLoadingState(btnEl)
                 {
                     if (cfg.btnLoadingClass && !cfg.addClassToCurrentBtnOnly) {
                         btnEl.addClass(cfg.btnLoadingClass);
@@ -32,15 +31,71 @@ angular.module('angularPromiseButtons')
                     if (cfg.disableBtn && !cfg.disableCurrentBtnOnly) {
                         btnEl.attr('disabled', 'disabled');
                     }
+                    if (cfg.btnLoadingHtml)
+                    {
+                        btnEl.html(cfg.btnLoadingHtml);
+                    }
                 }
 
-                function handleLoadingFinished(btnEl)
+                function handleLoadingFinished(btnEl, defaultHtml, onEndFn, onEndConfig)
+                {
+                    removeLoadingState(btnEl);
+                    setFinishedState(btnEl, onEndConfig);
+
+                    //OnSuccess or OnError
+                    if (onEndFn && typeof onEndFn === 'function')
+                    {
+                        onEndFn();
+                    }
+
+                    if (cfg.onComplete && typeof cfg.onComplete === 'function')
+                    {
+                        cfg.onComplete();
+                    }
+
+                    var waitTime = 0;
+                    if (onEndConfig && onEndConfig.resultWaitTime && onEndConfig.resultWaitTime >= 0) {
+                        waitTime = onEndConfig.resultWaitTime;
+                    }
+
+                    return $timeout(function() {
+                        revertToNormalState(btnEl, defaultHtml, onEndConfig);
+                    }, waitTime);
+                }
+
+                function setFinishedState(btnEl, onEndConfig)
+                {
+                    if (onEndConfig)
+                    {
+                        if (onEndConfig.resultHtml)
+                        {
+                            btnEl.html(onEndConfig.resultHtml);
+                        }
+                        if (onEndConfig.resultCssClass)
+                        {
+                            btnEl.addClass(onEndConfig.resultCssClass);
+                        }
+                    }
+                }
+
+                function removeLoadingState(btnEl)
                 {
                     if (cfg.btnLoadingClass) {
                         btnEl.removeClass(cfg.btnLoadingClass);
                     }
+                }
+
+                function revertToNormalState(btnEl, defaultHtml, onEndConfig)
+                {
                     if (cfg.disableBtn) {
                         btnEl.removeAttr('disabled');
+                    }
+                    if (defaultHtml) {
+                        btnEl.html(defaultHtml);
+                    }
+                    if (onEndConfig && onEndConfig.resultCssClass)
+                    {
+                        btnEl.removeClass(onEndConfig.resultCssClass);
                     }
                 }
 
@@ -49,21 +104,29 @@ angular.module('angularPromiseButtons')
                     // watch promise to resolve or fail
                     scope.$watch(watchExpressionForPromise, function (mVal)
                     {
+                        var initPromise = null;
                         // for regular promises
-                        if (mVal && mVal.then) {
-                            handleLoading(btnEl);
-                            mVal.finally(function ()
-                            {
-                                handleLoadingFinished(btnEl);
-                            });
+                        if (mVal && mVal.then)
+                        {
+                            initPromise = mVal;
                         }
                         // for $resource
-                        else if (mVal && mVal.$promise) {
-                            handleLoading(btnEl);
-                            mVal.$promise.finally(function ()
-                            {
-                                handleLoadingFinished(btnEl);
-                            });
+                        else if (mVal && mVal.$promise)
+                        {
+                            initPromise = mVal.$promise;
+                        }
+
+                        if (initPromise)
+                        {
+                            var defaultHtml = cfg.defaultHtml || btnEl.html();
+                            setLoadingState(btnEl);
+                            initPromise.then(
+                                function() {
+                                    handleLoadingFinished(btnEl, defaultHtml, cfg.onSuccess, cfg.onSuccessConfig);
+                                },
+                                function() {
+                                    handleLoadingFinished(btnEl, defaultHtml, cfg.onError, cfg.onErrorConfig);
+                                });
                         }
                     });
                 }
@@ -210,8 +273,23 @@ angular.module('angularPromiseButtons')
             spinnerTpl: '<span class="btn-spinner"></span>',
             disableBtn: true,
             btnLoadingClass: 'is-loading',
+            btnLoadingHtml: null,
             addClassToCurrentBtnOnly: false,
-            disableCurrentBtnOnly: false
+            disableCurrentBtnOnly: false,
+            defaultHtml: null,
+            onComplete: null,
+            onSuccess: null,
+            onError: null,
+            onSuccessConfig: {
+                resultWaitTime: 0,
+                resultHtml: 'Success',
+                resultCssClass: 'loading-success'
+            },
+            onErrorConfig: {
+                resultWaitTime: 0,
+                resultHtml: 'Failure',
+                resultCssClass: 'loading-error'
+            }
         };
 
 

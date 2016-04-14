@@ -60,3 +60,34 @@
     </button>
     <button type="button">I'm just a button</button>
 </form>
+
+<h3>Method Calls on Completion</h3>
+<button class="btn"
+        ng-click="directlyReturnSuccessPromise()"
+        promise-btn
+        promise-btn-options="onCompletionFunctionOptions">
+    Success and Completion handler 
+</button>
+<button class="btn"
+        ng-click="directlyReturnErrorPromise()"
+        promise-btn
+        promise-btn-options="onCompletionFunctionOptions">
+    Error and Completion handler
+</button>
+<p ng-repeat="message in functionMessages track by $index">{{message}}</p>
+
+<h3>Button Result Display on Completion</h3>
+<button class="btn"
+        ng-click="directlyReturnSuccessPromise()"
+        promise-btn
+        promise-btn-options="onCompletionButtonDisplayOptions">
+    I'll display 'Success' for a second.
+</button>
+<button class="btn"
+        ng-click="directlyReturnErrorPromise()"
+        promise-btn
+        promise-btn-options="onCompletionButtonDisplayOptions">
+    I'll display 'Error' for a second.
+</button>
+
+
