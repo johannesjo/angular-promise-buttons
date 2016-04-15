@@ -1,30 +1,7 @@
-﻿declare module angularPromiseButtons {
-    interface IPromiseButtonsProvider {
-        extendConfig: (config: IPromiseButtonConfigOptions) => void
-        $get: () => IPromiseButtonConfig;
-    }
-
-    interface IPromiseButtonConfigOptions {
-        spinnerTpl?: string;
-        disableBtn?: boolean;
-        btnLoadingClass?: string;
-        btnLoadingHtml?: string;
-        addClassToCurrentBtnOnly?: boolean;
-        disableCurrentBtnOnly?: boolean;
-        defaultHtml?: string;
-        onCompleteHandlerFunction?: () => void;
-        onSuccessConfig?: IPromiseButtonResultConfigOptions;
-        onErrorConfig?: IPromiseButtonResultConfigOptions;
-    }
-
-    interface IPromiseButtonResultConfigOptions {
-        handlerFunction?: () => void;
-        resultWaitTime?: number;
-        resultHtml?: string;
-        resultCssClass?: string
-    }
-
-    interface IPromiseButtonConfig extends IPromiseButtonConfigOptions {
+﻿declare module angularPromiseButtons
+{
+    interface IPromiseButtonConfig
+    {
         spinnerTpl: string;
         disableBtn: boolean;
         btnLoadingClass: string;
@@ -32,12 +9,13 @@
         addClassToCurrentBtnOnly: boolean;
         disableCurrentBtnOnly: boolean;
         defaultHtml: string;
-        onCompleteHandlerFunction: () => void;
+        onComplete: () => void;
         onSuccessConfig: IPromiseButtonResultConfig;
         onErrorConfig: IPromiseButtonResultConfig;
     }
 
-    interface IPromiseButtonResultConfig extends IPromiseButtonResultConfigOptions {
+    interface IPromiseButtonResultConfig
+    {
         handlerFunction: () => void;
         resultWaitTime: number;
         resultHtml: string;
