@@ -28,20 +28,7 @@ angular.module('yourApp',[
 ]);
 ```
 
-Using the buttons is easy. Just hand over the promise in question to the promiseBtn-directive and you're good to go:
-
-```html
-<button ng-click="yourServiceCaller()"
-        promise-btn="yourPromise">MyBtn</button>
-```
-Now you just have to assign a promise to ```yourPromise```:
-```javascript
-// inside some controller
-$scope.yourServiceCaller = function ()
-{
-  $scope.yourPromise = fakeFactory.method().then(...);
-};
-```
+Using the buttons is easy. Just return the promise in question in your service caller and you're good to go:
 You can also directly return the promise via the function passed to `ng-click`:
 ```html
 <button ng-click="yourServiceCaller()"
@@ -55,7 +42,8 @@ $scope.yourServiceCaller = function ()
   return fakeFactory.method().then(...);
 };
 ```
-Or for `ng-submit`:
+### using it for forms
+For using the promise buttons with `ng-submit` you need to apply them to the form directive and add `type="submit" to the buttons you want to show a loader for:
 ```html
 <form ng-submit="yourServiceCaller()"
       promise-btn>
@@ -70,6 +58,23 @@ $scope.yourServiceCaller = function ()
   return fakeFactory.method().then(...);
 };
 ```
+
+### alternative syntax
+There is also an alternative syntax, which allows you to share promises between buttons (and possibly other directives):
+```html
+<button ng-click="yourServiceCaller()"
+        promise-btn="yourPromise">MyBtn</button>
+```
+Now you just have to assign a promise to ```yourPromise```:
+```javascript
+// inside some controller
+$scope.yourServiceCaller = function ()
+{
+  $scope.yourPromise = fakeFactory.method().then(...);
+};
+```
+
+
 
 ## styling the button
 The base-styles might not be overwhelmingly sexy, but it is easy to fix that! There are lots of free css-spinners out there. Just find one of your liking and add the css.
