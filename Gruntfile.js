@@ -399,6 +399,7 @@ module.exports = function (grunt)
                 singleRun: true,
                 options: {
                     files: [
+                        './node_modules/phantomjs-polyfill/bind-polyfill.js',
                         // bower:js
                         'bower_components/angular/angular.js',
                         'bower_components/angular-animate/angular-animate.js',
