@@ -93,4 +93,12 @@
   opacity: 1; }
 
 .btn {
-  text-align: left; }
+  text-align: left; 
+}
+
+.loading-success {
+    background-color: #03C03C;
+}
+.loading-error {
+    background-color: #E32636;
+}

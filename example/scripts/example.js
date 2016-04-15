@@ -78,6 +78,12 @@ angular.module('exampleApp', [
         {
             return fakeFac.success();
         };
+        $scope.directlyReturnSuccessPromise = function () {
+            return fakeFac.success();
+        };
+        $scope.directlyReturnErrorPromise = function () {
+            return fakeFac.error();
+        };
         $scope.chain = function ()
         {
             $scope.v.promiseIndex = 0;
@@ -96,6 +102,40 @@ angular.module('exampleApp', [
                 $scope.v.promiseIndex++;
             });
         };
+
+        $scope.functionMessages = [];
+
+        console.log($scope.functionMessages);
+
+        $scope.onCompletionFunctionOptions = {
+            onCompleteHandlerFunction: function () {
+                $scope.functionMessages.push("Completed");
+            },
+            onSuccessConfig: {
+                handlerFunction: function() {
+                    $scope.functionMessages.push("Succeeded");
+                }
+            },
+            onErrorConfig: {
+                handlerFunction: function() { 
+                    $scope.functionMessages.push("Failed");
+                }
+            }
+        }
+
+        $scope.onCompletionButtonDisplayOptions = {
+            btnLoadingHtml: "I'm loading...",
+            onSuccessConfig: {
+                resultWaitTime: 1000,
+                resultHtml: 'Success',
+                resultCssClass: 'loading-success'
+            },
+            onErrorConfig: {
+                resultWaitTime: 1000,
+                resultHtml: 'Failure',
+                resultCssClass: 'loading-error'
+            }
+        }
 
         $scope.auto();
     });
