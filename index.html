@@ -122,18 +122,8 @@
 <pre><code>angular.module(&#39;yourApp&#39;,[
   &#39;angularPromiseButtons&#39;
 ]);
-</code></pre><p>Using the buttons is easy. Just hand over the promise in question to the promiseBtn-directive and you&#39;re good to go:</p>
-<pre><code class="lang-html">&lt;button ng-click=&quot;yourServiceCaller()&quot;
-        promise-btn=&quot;yourPromise&quot;&gt;MyBtn&lt;/button&gt;
-</code></pre>
-<p>Now you just have to assign a promise to <code>yourPromise</code>:</p>
-<pre><code class="lang-javascript">// inside some controller
-$scope.yourServiceCaller = function ()
-{
-  $scope.yourPromise = fakeFactory.method().then(...);
-};
-</code></pre>
-<p>You can also directly return the promise via the function passed to <code>ng-click</code>:</p>
+</code></pre><p>Using the buttons is easy. Just return the promise in question in your service caller and you&#39;re good to go:
+You can also directly return the promise via the function passed to <code>ng-click</code>:</p>
 <pre><code class="lang-html">&lt;button ng-click=&quot;yourServiceCaller()&quot;
         promise-btn&gt;Click me to spin!&lt;/button&gt;
 </code></pre>
@@ -143,7 +133,8 @@ $scope.yourServiceCaller = function ()
   return fakeFactory.method().then(...);
 };
 </code></pre>
-<p>Or for <code>ng-submit</code>:</p>
+<h3 id="using-it-for-forms">using it for forms</h3>
+<p>For using the promise buttons with <code>ng-submit</code> you need to apply them to the form directive and add `type=&quot;submit&quot; to the buttons you want to show a loader for:</p>
 <pre><code class="lang-html">&lt;form ng-submit=&quot;yourServiceCaller()&quot;
       promise-btn&gt;
   &lt;button type=&quot;submit&quot;&gt;MyBtn&lt;/button&gt;
@@ -153,6 +144,18 @@ $scope.yourServiceCaller = function ()
 $scope.yourServiceCaller = function ()
 {
   return fakeFactory.method().then(...);
+};
+</code></pre>
+<h3 id="alternative-syntax">alternative syntax</h3>
+<p>There is also an alternative syntax, which allows you to share promises between buttons (and possibly other directives):</p>
+<pre><code class="lang-html">&lt;button ng-click=&quot;yourServiceCaller()&quot;
+        promise-btn=&quot;yourPromise&quot;&gt;MyBtn&lt;/button&gt;
+</code></pre>
+<p>Now you just have to assign a promise to <code>yourPromise</code>:</p>
+<pre><code class="lang-javascript">// inside some controller
+$scope.yourServiceCaller = function ()
+{
+  $scope.yourPromise = fakeFactory.method().then(...);
 };
 </code></pre>
 <h2 id="styling-the-button">styling the button</h2>
