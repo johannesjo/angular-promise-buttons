@@ -95,7 +95,7 @@ angular.module('angularPromiseButtons')
                     if (cfg.disableBtn) {
                         btnEl.removeAttr('disabled');
                     }
-                    if (defaultHtml) {
+                    if (defaultHtml && btnEl.html() != defaultHtml) {
                         btnEl.html(defaultHtml);
                     }
                     if (onEndConfig && onEndConfig.resultCssClass)
