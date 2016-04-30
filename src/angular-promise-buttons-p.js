@@ -11,8 +11,23 @@ angular.module('angularPromiseButtons')
             spinnerTpl: '<span class="btn-spinner"></span>',
             disableBtn: true,
             btnLoadingClass: 'is-loading',
+            btnLoadingHtml: null,
             addClassToCurrentBtnOnly: false,
-            disableCurrentBtnOnly: false
+            disableCurrentBtnOnly: false,
+            defaultHtml: null,
+            onComplete: null,
+            onSuccessConfig: {
+                handlerFunction: null,
+                resultWaitTime: 0,
+                resultHtml: 'Success',
+                resultCssClass: 'loading-success'
+            },
+            onErrorConfig: {
+                handlerFunction: null,
+                resultWaitTime: 0,
+                resultHtml: 'Error',
+                resultCssClass: 'loading-error'
+            }
         };
 
 
