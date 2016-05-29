@@ -2,7 +2,7 @@ angular.module('angularPromiseButtons', [
 ]);
 
 angular.module('angularPromiseButtons')
-    .directive('promiseBtn', ['angularPromiseButtons', '$parse', function (angularPromiseButtons, $parse)
+    .directive('promiseBtn', ['angularPromiseButtons', '$compile', '$parse', function (angularPromiseButtons, $compile, $parse)
     {
         'use strict';
 
@@ -13,6 +13,7 @@ angular.module('angularPromiseButtons')
 
         return {
             restrict: 'EA',
+            priority: angularPromiseButtons.config.priority,
             scope: {
                 promiseBtn: '=',
                 promiseBtnOptions: '=?'
@@ -82,7 +83,7 @@ angular.module('angularPromiseButtons')
 
                 function appendSpinnerTpl(btnEl)
                 {
-                    btnEl.append(cfg.spinnerTpl);
+                    btnEl.append($compile(cfg.spinnerTpl)(scope));
                 }
 
                 function addHandlersForCurrentBtnOnly(btnEl)
@@ -208,6 +209,7 @@ angular.module('angularPromiseButtons')
 
         var config = {
             spinnerTpl: '<span class="btn-spinner"></span>',
+            priority: 0,
             disableBtn: true,
             btnLoadingClass: 'is-loading',
             addClassToCurrentBtnOnly: false,
