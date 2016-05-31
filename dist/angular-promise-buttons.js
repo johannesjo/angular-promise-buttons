@@ -49,8 +49,16 @@ angular.module('angularPromiseButtons')
                     // watch promise to resolve or fail
                     scope.$watch(watchExpressionForPromise, function (mVal)
                     {
+                        // for jquery/oauth.io like promises
+                        if (mVal && mVal.always) {
+                            handleLoading(btnEl);
+                            mVal.always(function ()
+                            {
+                                handleLoadingFinished(btnEl);
+                            });
+                        }
                         // for regular promises
-                        if (mVal && mVal.then) {
+                        else if (mVal && mVal.then) {
                             handleLoading(btnEl);
                             mVal.finally(function ()
                             {
