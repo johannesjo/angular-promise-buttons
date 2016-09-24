@@ -12,7 +12,8 @@ angular.module('angularPromiseButtons')
             disableBtn: true,
             btnLoadingClass: 'is-loading',
             addClassToCurrentBtnOnly: false,
-            disableCurrentBtnOnly: false
+            disableCurrentBtnOnly: false,
+            minTimeout: 700
         };
 
 
