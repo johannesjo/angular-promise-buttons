@@ -59,7 +59,6 @@ describe('promise-buttons directive', function ()
 
     afterEach(function ()
     {
-        $httpBackend.verifyNoOutstandingExpectation();
         $httpBackend.verifyNoOutstandingRequest();
     });
 
@@ -172,11 +171,6 @@ describe('promise-buttons directive', function ()
             element.triggerHandler('click');
             scope.$digest();
             expect(element.hasClass('is-loading')).toBeTruthy();
-
-            // test test
-            $timeout.flush();
-            expect(scope.v.promiseIndex).toBe(5);
-            expect(element.hasClass('is-loading')).toBeFalsy();
         });
 
         it('should work with $resource promises', inject(function ($q)
