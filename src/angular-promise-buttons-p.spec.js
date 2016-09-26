@@ -52,6 +52,29 @@ describe('promise-buttons directive with config', function ()
             }
         };
     }));
+    
+    describe('configuration provider', function() 
+    {
+        var angularPromiseButtons;
+        beforeEach(inject(function (_angularPromiseButtons_)
+        {
+            angularPromiseButtons = _angularPromiseButtons_;
+        }));
+
+        it('default priority', function()
+        {
+            expect(angularPromiseButtons.config.priority).toEqual(0);
+        });
+
+        it('customize priority', function()
+        {
+            var priority = 5;
+            provider.extendConfig({
+                priority: priority
+            });
+            expect(angularPromiseButtons.config.priority).toEqual(priority);
+        });
+    });
 
     describe('a simple success promise on click', function ()
     {
