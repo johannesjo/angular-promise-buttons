@@ -20,6 +20,8 @@ angular.module('angularPromiseButtons')
                 var providerCfg = angularPromiseButtons.config;
                 var cfg = providerCfg;
                 var promiseWatcher;
+                var timeoutDone;
+                var promiseDone;
 
 
                 function handleLoading(btnEl)
@@ -34,11 +36,13 @@ angular.module('angularPromiseButtons')
 
                 function handleLoadingFinished(btnEl)
                 {
-                    if (cfg.btnLoadingClass) {
-                        btnEl.removeClass(cfg.btnLoadingClass);
-                    }
-                    if (cfg.disableBtn) {
-                        btnEl.removeAttr('disabled');
+                    if (timeoutDone && promiseDone) {
+                        if (cfg.btnLoadingClass) {
+                            btnEl.removeClass(cfg.btnLoadingClass);
+                        }
+                        if (cfg.disableBtn) {
+                            btnEl.removeAttr('disabled');
+                        }
                     }
                 }
 
@@ -47,19 +51,27 @@ angular.module('angularPromiseButtons')
                     // watch promise to resolve or fail
                     scope.$watch(watchExpressionForPromise, function (mVal)
                     {
+                        timeoutDone = false;
+                        promiseDone = false;
+                        
+                        $timeout(function () {
+                            timeoutDone = true;
+                            handleLoadingFinished(btnEl);
+                        }, cfg.minTimeout);
+                        
                         // for regular promises
                         if (mVal && mVal.then) {
                             handleLoading(btnEl);
-                            mVal.finally(function ()
-                            {
+                            mVal.finally(function () {
+                                promiseDone = true;
                                 handleLoadingFinished(btnEl);
                             });
                         }
                         // for $resource
                         else if (mVal && mVal.$promise) {
                             handleLoading(btnEl);
-                            mVal.$promise.finally(function ()
-                            {
+                            mVal.$promise.finally(function () {
+                                promiseDone = true;
                                 handleLoadingFinished(btnEl);
                             });
                         }
