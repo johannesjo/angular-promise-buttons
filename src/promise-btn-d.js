@@ -3,10 +3,6 @@ angular.module('angularPromiseButtons')
     {
         'use strict';
 
-        var CLICK_EVENT = 'click';
-        var CLICK_ATTR = 'ngClick';
-        var SUBMIT_EVENT = 'submit';
-        var SUBMIT_ATTR = 'ngSubmit';
 
         return {
             restrict: 'EA',
@@ -87,14 +83,14 @@ angular.module('angularPromiseButtons')
                 {
                     // handle current button only options via click
                     if (cfg.addClassToCurrentBtnOnly) {
-                        btnEl.on(CLICK_EVENT, function ()
+                        btnEl.on(cfg.CLICK_EVENT, function ()
                         {
                             btnEl.addClass(cfg.btnLoadingClass);
                         });
                     }
 
                     if (cfg.disableCurrentBtnOnly) {
-                        btnEl.on(CLICK_EVENT, function ()
+                        btnEl.on(cfg.CLICK_EVENT, function ()
                         {
                             btnEl.attr('disabled', 'disabled');
                         });
@@ -157,19 +153,19 @@ angular.module('angularPromiseButtons')
                 // check if there is any value given via attrs.promiseBtn
                 if (!attrs.promiseBtn) {
                     // handle ngClick function directly returning a promise
-                    if (attrs.hasOwnProperty(CLICK_ATTR)) {
+                    if (attrs.hasOwnProperty(cfg.CLICK_ATTR)) {
                         appendSpinnerTpl(el);
                         addHandlersForCurrentBtnOnly(el);
-                        initHandlingOfViewFunctionsReturningAPromise(CLICK_EVENT, CLICK_ATTR, el);
+                        initHandlingOfViewFunctionsReturningAPromise(cfg.CLICK_EVENT, cfg.CLICK_ATTR, el);
                     }
                     // handle ngSubmit function directly returning a promise
-                    else if (attrs.hasOwnProperty(SUBMIT_ATTR)) {
+                    else if (attrs.hasOwnProperty(cfg.SUBMIT_ATTR)) {
                         // get child submits for form elements
                         var btnElements = getSubmitBtnChildren(el);
 
                         appendSpinnerTpl(btnElements);
                         addHandlersForCurrentBtnOnly(btnElements);
-                        initHandlingOfViewFunctionsReturningAPromise(SUBMIT_EVENT, SUBMIT_ATTR, btnElements);
+                        initHandlingOfViewFunctionsReturningAPromise(cfg.SUBMIT_EVENT, cfg.SUBMIT_ATTR, btnElements);
                     }
                 }
                 // handle promises passed via scope.promiseBtn

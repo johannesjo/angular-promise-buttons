@@ -98,7 +98,11 @@ angular.module('exampleApp', [
     disableBtn: true,
     btnLoadingClass: 'is-loading',
     addClassToCurrentBtnOnly: false,
-    disableCurrentBtnOnly: false
+    disableCurrentBtnOnly: false,
+    CLICK_EVENT: 'click',
+    CLICK_ATTR: 'ngClick',
+    SUBMIT_EVENT: 'submit',
+    SUBMIT_ATTR: 'ngSubmit'
   });
 });
 ```
