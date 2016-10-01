@@ -1,2 +1,1 @@
-angular.module('angularPromiseButtons', [
-]);
+angular.module('angularPromiseButtons', []);
