@@ -18,6 +18,7 @@ angular.module('angularPromiseButtons')
                 var providerCfg = angularPromiseButtons.config;
                 var cfg = providerCfg;
                 var promiseWatcher;
+                var timeout;
                 var timeoutDone;
                 var promiseDone;
 
@@ -32,7 +33,7 @@ angular.module('angularPromiseButtons')
                 }
 
                 function handleLoadingFinished(btnEl) {
-                    if (timeoutDone && promiseDone) {
+                    if ((!cfg.minTimeout || timeoutDone) && promiseDone) {
                         if (cfg.btnLoadingClass) {
                             btnEl.removeClass(cfg.btnLoadingClass);
                         }
@@ -48,10 +49,13 @@ angular.module('angularPromiseButtons')
                         timeoutDone = false;
                         promiseDone = false;
 
-                        $timeout(function() {
-                            timeoutDone = true;
-                            handleLoadingFinished(btnEl);
-                        }, cfg.minTimeout);
+                        // create timeout if option is set
+                        if (cfg.minTimeout) {
+                            timeout = $timeout(function() {
+                                timeoutDone = true;
+                                handleLoadingFinished(btnEl);
+                            }, cfg.minTimeout);
+                        }
 
                         // for regular promises
                         if (mVal && mVal.then) {
@@ -183,6 +187,11 @@ angular.module('angularPromiseButtons')
                         cfg = angular.extend({}, providerCfg, newVal);
                     }
                 }, true);
+
+                // cleanup
+                scope.$on('$destroy', function() {
+                    $timeout.cancel(timeout);
+                });
             }
         };
     }]);
