@@ -7,19 +7,20 @@ describe('promise-buttons directive with config', function() {
         provider = angularPromiseButtonsProvider;
     }));
 
-    var scope,
-        $timeout,
-        $rootScope,
-        $compile,
-        fakeFact,
-        html;
+    var scope;
+    var $timeout;
+    var $rootScope;
+    var $compile;
+    var fakeFact;
+    var html;
+    var $q;
 
 
     beforeEach(inject(function(_$rootScope_, _$compile_, _$timeout_, _$q_) {
         $rootScope = _$rootScope_;
         $compile = _$compile_;
         $timeout = _$timeout_;
-        var $q = _$q_;
+        $q = _$q_;
 
         scope = $rootScope.$new();
 
@@ -227,6 +228,40 @@ describe('promise-buttons directive with config', function() {
                 .toBe(true);
             expect(element2.attr('disabled'))
                 .toBe(undefined);
+        });
+
+        it('should keep spinning until timeout is done, when minDuration option is set', function() {
+            var defer;
+
+            provider.extendConfig({
+                minDuration: 400
+            });
+            element = $compile(html)(scope);
+            scope.$digest();
+
+            scope.asyncCall = function() {
+                defer = $q.defer();
+                scope.promise = defer.promise;
+                return scope.promise;
+            };
+
+            element.triggerHandler('click');
+            scope.$digest();
+            expect(element.hasClass('is-loading'))
+                .toBeTruthy();
+
+            // should still be running
+            defer.resolve();
+            scope.$digest();
+            expect(element.hasClass('is-loading'))
+                .toBeTruthy();
+
+            // should not be running any more after timeout is resolved
+            $timeout.flush();
+            scope.$digest();
+            expect(element.hasClass('is-loading'))
+                .toBeFalsy();
+
         });
     });
 

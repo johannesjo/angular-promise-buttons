@@ -52,6 +52,18 @@ describe('promise-buttons directive', function() {
         $httpBackend.verifyNoOutstandingRequest();
     });
 
+    it('should call timeout.cancel on scope destroy', function() {
+        spyOn($timeout, 'cancel');
+        var html = '<button ng-click="asyncCall()" promise-btn="promise">Success after delay</button>';
+        var element = $compile(html)(scope);
+        var dScope = element.isolateScope();
+        dScope.$destroy();
+        scope.$digest();
+        expect($timeout.cancel)
+            .toHaveBeenCalled();
+    });
+
+
     describe('a simple promise on click', function() {
         var element;
 
