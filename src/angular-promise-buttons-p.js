@@ -13,7 +13,7 @@ angular.module('angularPromiseButtons')
             btnLoadingClass: 'is-loading',
             addClassToCurrentBtnOnly: false,
             disableCurrentBtnOnly: false,
-            minTimeout: false,
+            minDuration: false,
             CLICK_EVENT: 'click',
             CLICK_ATTR: 'ngClick',
             SUBMIT_EVENT: 'submit',

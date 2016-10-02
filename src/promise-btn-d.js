@@ -33,7 +33,7 @@ angular.module('angularPromiseButtons')
                 }
 
                 function handleLoadingFinished(btnEl) {
-                    if ((!cfg.minTimeout || timeoutDone) && promiseDone) {
+                    if ((!cfg.minDuration || timeoutDone) && promiseDone) {
                         if (cfg.btnLoadingClass) {
                             btnEl.removeClass(cfg.btnLoadingClass);
                         }
@@ -50,11 +50,11 @@ angular.module('angularPromiseButtons')
                         promiseDone = false;
 
                         // create timeout if option is set
-                        if (cfg.minTimeout) {
+                        if (cfg.minDuration) {
                             timeout = $timeout(function() {
                                 timeoutDone = true;
                                 handleLoadingFinished(btnEl);
-                            }, cfg.minTimeout);
+                            }, cfg.minDuration);
                         }
 
                         // for regular promises
