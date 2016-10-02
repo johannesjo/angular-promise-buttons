@@ -75,55 +75,54 @@
 .btn-spinner {
     font-family: sans-serif;
     font-weight: 100;
-}
 
-/* :not(:required) hides this rule from IE9 and below */
-.btn-spinner:not(:required) {
-    -webkit-animation: three-quarters 1250ms infinite linear;
-    -moz-animation: three-quarters 1250ms infinite linear;
-    -ms-animation: three-quarters 1250ms infinite linear;
-    -o-animation: three-quarters 1250ms infinite linear;
-    animation: three-quarters 1250ms infinite linear;
-    border: 3px solid #8c8c8c;
-    border-right-color: transparent;
-    border-radius: 100%;
-    box-sizing: border-box;
-    display: inline-block;
-    position: relative;
-    vertical-align: middle;
-    overflow: hidden;
-    text-indent: -9999px;
-    width: 18px;
-    height: 18px;
+    /* :not(:required) hides this rule from IE9 and below */
+    &:not(:required) {
+        -webkit-animation: three-quarters 1250ms infinite linear;
+        -moz-animation: three-quarters 1250ms infinite linear;
+        -ms-animation: three-quarters 1250ms infinite linear;
+        -o-animation: three-quarters 1250ms infinite linear;
+        animation: three-quarters 1250ms infinite linear;
+        border: 3px solid #8c8c8c;
+        border-right-color: transparent;
+        border-radius: 100%;
+        box-sizing: border-box;
+        display: inline-block;
+        position: relative;
+        vertical-align: middle;
+        overflow: hidden;
+        text-indent: -9999px;
+        width: 18px;
+        height: 18px;
 
-}
-
-// slide in out
-.btn-spinner:not(:required) {
-    margin-left: -22px;
-    opacity: 0;
-    transition: 0.4s margin ease-out,
-    0.2s opacity ease-out;
-}
-
-.is-loading {
-    .btn-spinner {
-        transition: 0.2s margin ease-in,
-        0.4s opacity ease-in;
-
-        margin-left: 5px;
-        opacity: 1;
+        // slide in out
+        margin-left: -22px;
+        opacity: 0;
+        transition: 0.4s margin ease-out,
+        0.2s opacity ease-out;
     }
 }
 
 .btn {
     text-align: left;
-}
 
-.loading-success {
-    background-color: #03C03C;
-}
-.loading-error {
-    background-color: #E32636;
-}
+    &.is-success {
+        background-color: #03c03c;
+        color: #fff;
+    }
 
+    &.is-error {
+        background-color: #e32636;
+        color: #fff;
+    }
+    &.is-loading {
+        .btn-spinner {
+            transition: 0.2s margin ease-in,
+            0.4s opacity ease-in;
+
+            margin-left: 5px;
+            opacity: 1;
+        }
+    }
+
+}

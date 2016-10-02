@@ -39,41 +39,44 @@ angular.module('angularPromiseButtons')
                     }
                 }
 
-                function handleLoadingFinished(btnEl, defaultHtml, onEndConfig) {
+                function handleLoadingFinished(btnEl, defaultHtml, loadingFinishedConfig) {
                     removeLoadingState(btnEl);
+                    var waitTime = 0;
 
                     //OnSuccess or OnError
-                    if (onEndConfig.handlerFunction && typeof onEndConfig.handlerFunction === 'function') {
-                        onEndConfig.handlerFunction();
+                    if (loadingFinishedConfig.handlerFunction && angular.isFunction(loadingFinishedConfig.handlerFunction)) {
+                        loadingFinishedConfig.handlerFunction();
                     }
 
-                    if (cfg.onComplete && typeof cfg.onComplete === 'function') {
+                    if (cfg.onComplete && angular.isFunction(cfg.onComplete)) {
                         cfg.onComplete();
                     }
 
-                    var waitTime = 0;
-                    if (onEndConfig && onEndConfig.resultWaitTime && onEndConfig.resultWaitTime >= 0) {
-                        waitTime = onEndConfig.resultWaitTime;
+                    if (loadingFinishedConfig && loadingFinishedConfig.resultWaitTime && loadingFinishedConfig.resultWaitTime >= 0) {
+                        waitTime = loadingFinishedConfig.resultWaitTime;
                     }
 
                     if (waitTime) {
-                        setFinishedState(btnEl, onEndConfig);
+                        setFinishedState(btnEl, loadingFinishedConfig);
                     }
 
+                    // revert button to default state
                     revertTimeout = $timeout(function() {
-                        revertToNormalState(btnEl, defaultHtml, onEndConfig);
+                        revertToNormalState(btnEl, defaultHtml, loadingFinishedConfig);
                     }, waitTime);
 
                     return revertTimeout;
                 }
 
-                function setFinishedState(btnEl, onEndConfig) {
-                    if (onEndConfig) {
-                        if (onEndConfig.resultHtml) {
-                            btnEl.html(onEndConfig.resultHtml);
+                function setFinishedState(btnEl, loadingFinishedConfig) {
+                    console.log(loadingFinishedConfig);
+
+                    if (loadingFinishedConfig) {
+                        if (loadingFinishedConfig.resultHtml) {
+                            btnEl.html(loadingFinishedConfig.resultHtml);
                         }
-                        if (onEndConfig.resultCssClass) {
-                            btnEl.addClass(onEndConfig.resultCssClass);
+                        if (loadingFinishedConfig.resultCssClass) {
+                            btnEl.addClass(loadingFinishedConfig.resultCssClass);
                         }
                     }
                 }
@@ -84,22 +87,22 @@ angular.module('angularPromiseButtons')
                     }
                 }
 
-                function revertToNormalState(btnEl, defaultHtml, onEndConfig) {
+                function revertToNormalState(btnEl, defaultHtml, loadingFinishedConfig) {
                     if (cfg.disableBtn) {
                         btnEl.removeAttr('disabled');
                     }
                     if (defaultHtml && btnEl.html() != defaultHtml) {
                         btnEl.html(defaultHtml);
                     }
-                    if (onEndConfig && onEndConfig.resultCssClass) {
-                        btnEl.removeClass(onEndConfig.resultCssClass);
+                    if (loadingFinishedConfig && loadingFinishedConfig.resultCssClass) {
+                        btnEl.removeClass(loadingFinishedConfig.resultCssClass);
                     }
                 }
 
                 function initPromiseWatcher(watchExpressionForPromise, btnEl) {
                     // watch promise to resolve or fail
                     scope.$watch(watchExpressionForPromise, function(mVal) {
-                        var initPromise = null;
+                        var promise;
                         timeoutDone = false;
                         promiseDone = false;
 
@@ -113,23 +116,27 @@ angular.module('angularPromiseButtons')
 
                         // for regular promises
                         if (mVal && mVal.then) {
-                            initPromise = mVal;
+                            promise = mVal;
                         }
                         // for $resource
                         else if (mVal && mVal.$promise) {
-                            initPromise = mVal.$promise;
+                            promise = mVal.$promise;
                         }
 
-                        if (initPromise) {
+                        if (promise) {
                             var defaultHtml = cfg.defaultHtml || btnEl.html();
                             setLoadingState(btnEl);
-                            initPromise.then(
+                            promise.then(
                                 function() {
                                     promiseDone = true;
+                                    console.log('SUCCESS');
+
                                     handleLoadingFinished(btnEl, defaultHtml, cfg.onSuccessConfig);
                                 },
                                 function() {
                                     promiseDone = true;
+                                    console.log('ERRO');
+
                                     handleLoadingFinished(btnEl, defaultHtml, cfg.onErrorConfig);
                                 });
                         }
@@ -279,15 +286,15 @@ angular.module('angularPromiseButtons')
             onComplete: null,
             onSuccessConfig: {
                 handlerFunction: null,
-                resultWaitTime: 0,
+                resultWaitTime: 1000,
                 resultHtml: 'Success',
-                resultCssClass: 'loading-success'
+                resultCssClass: 'is-success'
             },
             onErrorConfig: {
                 handlerFunction: null,
-                resultWaitTime: 0,
+                resultWaitTime: 1000,
                 resultHtml: 'Error',
-                resultCssClass: 'loading-error'
+                resultCssClass: 'is-error'
             },
             CLICK_EVENT: 'click',
             CLICK_ATTR: 'ngClick',

@@ -20,15 +20,15 @@ angular.module('angularPromiseButtons')
             onComplete: null,
             onSuccessConfig: {
                 handlerFunction: null,
-                resultWaitTime: 0,
+                resultWaitTime: 1000,
                 resultHtml: 'Success',
-                resultCssClass: 'loading-success'
+                resultCssClass: 'is-success'
             },
             onErrorConfig: {
                 handlerFunction: null,
-                resultWaitTime: 0,
+                resultWaitTime: 1000,
                 resultHtml: 'Error',
-                resultCssClass: 'loading-error'
+                resultCssClass: 'is-error'
             },
             CLICK_EVENT: 'click',
             CLICK_ATTR: 'ngClick',
