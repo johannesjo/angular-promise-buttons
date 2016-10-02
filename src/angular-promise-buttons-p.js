@@ -1,5 +1,6 @@
 angular.module('angularPromiseButtons')
-    .provider('angularPromiseButtons', function angularPromiseButtonsProvider() {
+    .provider('angularPromiseButtons', function angularPromiseButtonsProvider()
+    {
         'use strict';
 
         // *****************
@@ -14,11 +15,27 @@ angular.module('angularPromiseButtons')
             addClassToCurrentBtnOnly: false,
             disableCurrentBtnOnly: false,
             minDuration: false,
+            btnLoadingHtml: null,
+            defaultHtml: null,
+            onComplete: null,
+            onSuccessConfig: {
+                handlerFunction: null,
+                resultWaitTime: 0,
+                resultHtml: 'Success',
+                resultCssClass: 'loading-success'
+            },
+            onErrorConfig: {
+                handlerFunction: null,
+                resultWaitTime: 0,
+                resultHtml: 'Error',
+                resultCssClass: 'loading-error'
+            },
             CLICK_EVENT: 'click',
             CLICK_ATTR: 'ngClick',
             SUBMIT_EVENT: 'submit',
             SUBMIT_ATTR: 'ngSubmit'
         };
+
 
         // *****************
         // SERVICE-FUNCTIONS
@@ -30,7 +47,8 @@ angular.module('angularPromiseButtons')
         // *************************
 
         return {
-            extendConfig: function(newConfig) {
+            extendConfig: function (newConfig)
+            {
                 config = angular.extend(config, newConfig);
             },
 
@@ -39,7 +57,8 @@ angular.module('angularPromiseButtons')
             // ACTUAL FACTORY FUNCTION - used by the directive
             // ************************************************
 
-            $get: function() {
+            $get: function ()
+            {
                 return {
                     config: config
                 };

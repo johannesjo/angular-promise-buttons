@@ -1,9 +1,13 @@
 angular.module('angularPromiseButtons', []);
 
 angular.module('angularPromiseButtons')
-    .directive('promiseBtn', ['angularPromiseButtons', '$compile', '$parse', function(angularPromiseButtons, $compile, $parse) {
+    .directive('promiseBtn', ['angularPromiseButtons', '$compile', '$parse', '$timeout', function(angularPromiseButtons, $compile, $parse, $timeout) {
         'use strict';
 
+        var CLICK_EVENT = 'click';
+        var CLICK_ATTR = 'ngClick';
+        var SUBMIT_EVENT = 'submit';
+        var SUBMIT_ATTR = 'ngSubmit';
 
         return {
             restrict: 'EA',
@@ -16,42 +20,118 @@ angular.module('angularPromiseButtons')
                 var providerCfg = angularPromiseButtons.config;
                 var cfg = providerCfg;
                 var promiseWatcher;
+                var minDurationTimeout;
+                var timeoutDone;
+                var promiseDone;
+                var revertTimeout;
 
 
-                function handleLoading(btnEl) {
+                function setLoadingState(btnEl) {
                     if (cfg.btnLoadingClass && !cfg.addClassToCurrentBtnOnly) {
                         btnEl.addClass(cfg.btnLoadingClass);
                     }
                     if (cfg.disableBtn && !cfg.disableCurrentBtnOnly) {
                         btnEl.attr('disabled', 'disabled');
                     }
+                    if (cfg.btnLoadingHtml) {
+                        btnEl.html(cfg.btnLoadingHtml);
+                        appendSpinnerTpl(btnEl);
+                    }
                 }
 
-                function handleLoadingFinished(btnEl) {
+                function handleLoadingFinished(btnEl, defaultHtml, onEndConfig) {
+                    removeLoadingState(btnEl);
+
+                    //OnSuccess or OnError
+                    if (onEndConfig.handlerFunction && typeof onEndConfig.handlerFunction === 'function') {
+                        onEndConfig.handlerFunction();
+                    }
+
+                    if (cfg.onComplete && typeof cfg.onComplete === 'function') {
+                        cfg.onComplete();
+                    }
+
+                    var waitTime = 0;
+                    if (onEndConfig && onEndConfig.resultWaitTime && onEndConfig.resultWaitTime >= 0) {
+                        waitTime = onEndConfig.resultWaitTime;
+                    }
+
+                    if (waitTime) {
+                        setFinishedState(btnEl, onEndConfig);
+                    }
+
+                    revertTimeout = $timeout(function() {
+                        revertToNormalState(btnEl, defaultHtml, onEndConfig);
+                    }, waitTime);
+
+                    return revertTimeout;
+                }
+
+                function setFinishedState(btnEl, onEndConfig) {
+                    if (onEndConfig) {
+                        if (onEndConfig.resultHtml) {
+                            btnEl.html(onEndConfig.resultHtml);
+                        }
+                        if (onEndConfig.resultCssClass) {
+                            btnEl.addClass(onEndConfig.resultCssClass);
+                        }
+                    }
+                }
+
+                function removeLoadingState(btnEl) {
                     if (cfg.btnLoadingClass) {
                         btnEl.removeClass(cfg.btnLoadingClass);
                     }
+                }
+
+                function revertToNormalState(btnEl, defaultHtml, onEndConfig) {
                     if (cfg.disableBtn) {
                         btnEl.removeAttr('disabled');
+                    }
+                    if (defaultHtml && btnEl.html() != defaultHtml) {
+                        btnEl.html(defaultHtml);
+                    }
+                    if (onEndConfig && onEndConfig.resultCssClass) {
+                        btnEl.removeClass(onEndConfig.resultCssClass);
                     }
                 }
 
                 function initPromiseWatcher(watchExpressionForPromise, btnEl) {
                     // watch promise to resolve or fail
                     scope.$watch(watchExpressionForPromise, function(mVal) {
+                        var initPromise = null;
+                        timeoutDone = false;
+                        promiseDone = false;
+
+                        // create timeout if option is set
+                        if (cfg.minDuration) {
+                            minDurationTimeout = $timeout(function() {
+                                timeoutDone = true;
+                                handleLoadingFinished(btnEl);
+                            }, cfg.minDuration);
+                        }
+
                         // for regular promises
                         if (mVal && mVal.then) {
-                            handleLoading(btnEl);
-                            mVal.finally(function() {
-                                handleLoadingFinished(btnEl);
-                            });
+                            initPromise = mVal;
                         }
                         // for $resource
                         else if (mVal && mVal.$promise) {
-                            handleLoading(btnEl);
-                            mVal.$promise.finally(function() {
-                                handleLoadingFinished(btnEl);
-                            });
+                            initPromise = mVal.$promise;
+                        }
+
+                        if (initPromise) {
+                            var defaultHtml = cfg.defaultHtml || btnEl.html();
+                            setLoadingState(btnEl);
+                            initPromise.then(
+                                function() {
+                                    promiseDone = true;
+                                    handleLoadingFinished(btnEl, defaultHtml, cfg.onSuccessConfig);
+                                },
+                                function() {
+                                    promiseDone = true;
+                                    handleLoadingFinished(btnEl, defaultHtml, cfg.onErrorConfig);
+                                });
                         }
                     });
                 }
@@ -67,19 +147,19 @@ angular.module('angularPromiseButtons')
                 }
 
                 function appendSpinnerTpl(btnEl) {
-                    btnEl.append($compile(cfg.spinnerTpl)(scope));
+                    btnEl.append(cfg.spinnerTpl);
                 }
 
                 function addHandlersForCurrentBtnOnly(btnEl) {
                     // handle current button only options via click
                     if (cfg.addClassToCurrentBtnOnly) {
-                        btnEl.on(cfg.CLICK_EVENT, function() {
+                        btnEl.on(CLICK_EVENT, function() {
                             btnEl.addClass(cfg.btnLoadingClass);
                         });
                     }
 
                     if (cfg.disableCurrentBtnOnly) {
-                        btnEl.on(cfg.CLICK_EVENT, function() {
+                        btnEl.on(CLICK_EVENT, function() {
                             btnEl.attr('disabled', 'disabled');
                         });
                     }
@@ -135,19 +215,19 @@ angular.module('angularPromiseButtons')
                 // check if there is any value given via attrs.promiseBtn
                 if (!attrs.promiseBtn) {
                     // handle ngClick function directly returning a promise
-                    if (attrs.hasOwnProperty(cfg.CLICK_ATTR)) {
+                    if (attrs.hasOwnProperty(CLICK_ATTR)) {
                         appendSpinnerTpl(el);
                         addHandlersForCurrentBtnOnly(el);
-                        initHandlingOfViewFunctionsReturningAPromise(cfg.CLICK_EVENT, cfg.CLICK_ATTR, el);
+                        initHandlingOfViewFunctionsReturningAPromise(CLICK_EVENT, CLICK_ATTR, el);
                     }
                     // handle ngSubmit function directly returning a promise
-                    else if (attrs.hasOwnProperty(cfg.SUBMIT_ATTR)) {
+                    else if (attrs.hasOwnProperty(SUBMIT_ATTR)) {
                         // get child submits for form elements
                         var btnElements = getSubmitBtnChildren(el);
 
                         appendSpinnerTpl(btnElements);
                         addHandlersForCurrentBtnOnly(btnElements);
-                        initHandlingOfViewFunctionsReturningAPromise(cfg.SUBMIT_EVENT, cfg.SUBMIT_ATTR, btnElements);
+                        initHandlingOfViewFunctionsReturningAPromise(SUBMIT_EVENT, SUBMIT_ATTR, btnElements);
                     }
                 }
                 // handle promises passed via scope.promiseBtn
@@ -167,12 +247,19 @@ angular.module('angularPromiseButtons')
                         cfg = angular.extend({}, providerCfg, newVal);
                     }
                 }, true);
+
+                // cleanup
+                scope.$on('$destroy', function() {
+                    $timeout.cancel(minDurationTimeout);
+                    $timeout.cancel(revertTimeout);
+                });
             }
         };
     }]);
 
 angular.module('angularPromiseButtons')
-    .provider('angularPromiseButtons', function angularPromiseButtonsProvider() {
+    .provider('angularPromiseButtons', function angularPromiseButtonsProvider()
+    {
         'use strict';
 
         // *****************
@@ -186,11 +273,28 @@ angular.module('angularPromiseButtons')
             btnLoadingClass: 'is-loading',
             addClassToCurrentBtnOnly: false,
             disableCurrentBtnOnly: false,
+            minDuration: false,
+            btnLoadingHtml: null,
+            defaultHtml: null,
+            onComplete: null,
+            onSuccessConfig: {
+                handlerFunction: null,
+                resultWaitTime: 0,
+                resultHtml: 'Success',
+                resultCssClass: 'loading-success'
+            },
+            onErrorConfig: {
+                handlerFunction: null,
+                resultWaitTime: 0,
+                resultHtml: 'Error',
+                resultCssClass: 'loading-error'
+            },
             CLICK_EVENT: 'click',
             CLICK_ATTR: 'ngClick',
             SUBMIT_EVENT: 'submit',
             SUBMIT_ATTR: 'ngSubmit'
         };
+
 
         // *****************
         // SERVICE-FUNCTIONS
@@ -202,7 +306,8 @@ angular.module('angularPromiseButtons')
         // *************************
 
         return {
-            extendConfig: function(newConfig) {
+            extendConfig: function (newConfig)
+            {
                 config = angular.extend(config, newConfig);
             },
 
@@ -211,7 +316,8 @@ angular.module('angularPromiseButtons')
             // ACTUAL FACTORY FUNCTION - used by the directive
             // ************************************************
 
-            $get: function() {
+            $get: function ()
+            {
                 return {
                     config: config
                 };
