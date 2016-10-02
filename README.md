@@ -99,6 +99,7 @@ angular.module('exampleApp', [
     btnLoadingClass: 'is-loading',
     addClassToCurrentBtnOnly: false,
     disableCurrentBtnOnly: false,
+    minDuration: false,
     CLICK_EVENT: 'click',
     CLICK_ATTR: 'ngClick',
     SUBMIT_EVENT: 'submit',
