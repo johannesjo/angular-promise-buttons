@@ -23,7 +23,7 @@ angular.module('angularPromiseButtons')
                 var promiseDone;
 
                 function editSpinnerTpl(promiseCfg) {
-                    var appendSpinnerClass = $(promiseCfg.spinnerTpl);
+                    var appendSpinnerClass = angular.element(promiseCfg.spinnerTpl);
                     appendSpinnerClass.addClass('spinner-block');
                     promiseCfg.spinnerTpl = appendSpinnerClass.prop('outerHTML');
                     return promiseCfg;
