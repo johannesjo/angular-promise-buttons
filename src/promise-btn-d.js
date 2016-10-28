@@ -15,15 +15,24 @@ angular.module('angularPromiseButtons')
                 promiseBtnOptions: '=?'
             },
             link: function(scope, el, attrs) {
-                var providerCfg = angularPromiseButtons.config;
+                var providerCfg = editSpinnerTpl(angularPromiseButtons.config);
                 var cfg = providerCfg;
                 var promiseWatcher;
                 var timeout;
                 var timeoutDone;
                 var promiseDone;
 
-
+                function editSpinnerTpl(promiseCfg) {
+                    var appendSpinnerClass = angular.element(promiseCfg.spinnerTpl);
+                    appendSpinnerClass.addClass('spinner-block');
+                    promiseCfg.spinnerTpl = appendSpinnerClass.prop('outerHTML');
+                    return promiseCfg;
+                }
+                
                 function handleLoading(btnEl) {
+                    if(btnEl.find('.spinner-block').length == 0) {
+                            btnEl.append(cfg.spinnerTpl);
+                    }
                     if (cfg.btnLoadingClass && !cfg.addClassToCurrentBtnOnly) {
                         btnEl.addClass(cfg.btnLoadingClass);
                     }
