@@ -1,5 +1,5 @@
 angular.module('angularPromiseButtons')
-    .directive('promiseBtn', ['angularPromiseButtons', '$parse', '$timeout', function(angularPromiseButtons, $parse, $timeout) {
+    .directive('promiseBtn', ['angularPromiseButtons', '$parse', '$timeout', '$compile', function(angularPromiseButtons, $parse, $timeout, $compile) {
         'use strict';
 
         return {
@@ -107,11 +107,11 @@ angular.module('angularPromiseButtons')
                 }
 
                 /**
-                 * Append the spinner template to the button
+                 * $compile and append the spinner template to the button.
                  * @param {Object}btnEl
                  */
                 function appendSpinnerTpl(btnEl) {
-                    btnEl.append(cfg.spinnerTpl);
+                    btnEl.append($compile(cfg.spinnerTpl)(scope));
                 }
 
                 /**
