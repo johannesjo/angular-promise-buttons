@@ -1,13 +1,8 @@
 angular.module('angularPromiseButtons', []);
 
 angular.module('angularPromiseButtons')
-    .directive('promiseBtn', ['angularPromiseButtons', '$parse', '$timeout', function(angularPromiseButtons, $parse, $timeout) {
+    .directive('promiseBtn', ['angularPromiseButtons', '$parse', '$timeout', '$compile', function(angularPromiseButtons, $parse, $timeout, $compile) {
         'use strict';
-
-        var CLICK_EVENT = 'click';
-        var CLICK_ATTR = 'ngClick';
-        var SUBMIT_EVENT = 'submit';
-        var SUBMIT_ATTR = 'ngSubmit';
 
         return {
             restrict: 'EA',
@@ -17,15 +12,24 @@ angular.module('angularPromiseButtons')
                 promiseBtnOptions: '=?'
             },
             link: function(scope, el, attrs) {
-                var providerCfg = angularPromiseButtons.config;
-                var cfg = providerCfg;
+                // provide configuration
+                var cfg = angularPromiseButtons.config;
+                // later initialized via initPromiseWatcher()
                 var promiseWatcher;
-                var timeout;
-                var timeoutDone;
+                //  timeout used
+                var minDurationTimeout;
+                // boolean to determine minDurationTimeout state
+                var minDurationTimeoutDone;
+                // boolean to determine if promise was resolved
                 var promiseDone;
 
 
-                function handleLoading(btnEl) {
+                /**
+                 * Handles everything to be triggered when the button is set
+                 * to loading state.
+                 * @param {Object}btnEl
+                 */
+                function initLoadingState(btnEl) {
                     if (cfg.btnLoadingClass && !cfg.addClassToCurrentBtnOnly) {
                         btnEl.addClass(cfg.btnLoadingClass);
                     }
@@ -34,8 +38,12 @@ angular.module('angularPromiseButtons')
                     }
                 }
 
+                /**
+                 * Handles everything to be triggered when loading is finished
+                 * @param {Object}btnEl
+                 */
                 function handleLoadingFinished(btnEl) {
-                    if ((!cfg.minDuration || timeoutDone) && promiseDone) {
+                    if ((!cfg.minDuration || minDurationTimeoutDone) && promiseDone) {
                         if (cfg.btnLoadingClass) {
                             btnEl.removeClass(cfg.btnLoadingClass);
                         }
@@ -45,23 +53,29 @@ angular.module('angularPromiseButtons')
                     }
                 }
 
+                /**
+                 * Initializes a watcher for the promise. Also takes
+                 * cfg.minDuration into account if given.
+                 * @param {Function}watchExpressionForPromise
+                 * @param {Object}btnEl
+                 */
                 function initPromiseWatcher(watchExpressionForPromise, btnEl) {
                     // watch promise to resolve or fail
                     scope.$watch(watchExpressionForPromise, function(mVal) {
-                        timeoutDone = false;
+                        minDurationTimeoutDone = false;
                         promiseDone = false;
 
                         // create timeout if option is set
                         if (cfg.minDuration) {
-                            timeout = $timeout(function() {
-                                timeoutDone = true;
+                            minDurationTimeout = $timeout(function() {
+                                minDurationTimeoutDone = true;
                                 handleLoadingFinished(btnEl);
                             }, cfg.minDuration);
                         }
 
                         // for regular promises
                         if (mVal && mVal.then) {
-                            handleLoading(btnEl);
+                            initLoadingState(btnEl);
                             mVal.finally(function() {
                                 promiseDone = true;
                                 handleLoadingFinished(btnEl);
@@ -69,7 +83,7 @@ angular.module('angularPromiseButtons')
                         }
                         // for $resource
                         else if (mVal && mVal.$promise) {
-                            handleLoading(btnEl);
+                            initLoadingState(btnEl);
                             mVal.$promise.finally(function() {
                                 promiseDone = true;
                                 handleLoadingFinished(btnEl);
@@ -78,6 +92,12 @@ angular.module('angularPromiseButtons')
                     });
                 }
 
+
+                /**
+                 * Get the callbacks from the (String) expression given.
+                 * @param {String}expression
+                 * @returns {Array}
+                 */
                 function getCallbacks(expression) {
                     return expression
                     // split by ; to get different functions if any
@@ -88,25 +108,43 @@ angular.module('angularPromiseButtons')
                         });
                 }
 
+                /**
+                 * $compile and append the spinner template to the button.
+                 * @param {Object}btnEl
+                 */
                 function appendSpinnerTpl(btnEl) {
-                    btnEl.append(cfg.spinnerTpl);
+                    btnEl.append($compile(cfg.spinnerTpl)(scope));
                 }
 
+                /**
+                 * Used to limit loading state to show only for the currently
+                 * clicked button.
+                 * @param {Object}btnEl
+                 */
                 function addHandlersForCurrentBtnOnly(btnEl) {
                     // handle current button only options via click
                     if (cfg.addClassToCurrentBtnOnly) {
-                        btnEl.on(CLICK_EVENT, function() {
+                        btnEl.on(cfg.CLICK_EVENT, function() {
                             btnEl.addClass(cfg.btnLoadingClass);
                         });
                     }
 
                     if (cfg.disableCurrentBtnOnly) {
-                        btnEl.on(CLICK_EVENT, function() {
+                        btnEl.on(cfg.CLICK_EVENT, function() {
                             btnEl.attr('disabled', 'disabled');
                         });
                     }
                 }
 
+                /**
+                 * Used for the function syntax of the promise button directive by
+                 * parsing the expressions provided by the attribute via getCallbacks().
+                 * Unbinds the default event handlers, which is why it might sometimes
+                 * be required to use the promise syntax.
+                 * @param {Object}eventToHandle
+                 * @param {String}attrToParse
+                 * @param {Object}btnEl
+                 */
                 function initHandlingOfViewFunctionsReturningAPromise(eventToHandle, attrToParse, btnEl) {
                     // we need to use evalAsync here, as
                     // otherwise the click or submit event
@@ -138,9 +176,14 @@ angular.module('angularPromiseButtons')
                     });
                 }
 
-                function getSubmitBtnChildren(el) {
+                /**
+                 * Get's all submit button children of the given element
+                 * @param {Object}formEl
+                 * @returns {Object}
+                 */
+                function getSubmitBtnChildren(formEl) {
                     var submitBtnEls = [];
-                    var allButtonEls = el.find('button');
+                    var allButtonEls = formEl.find('button');
 
                     for (var i = 0; i < allButtonEls.length; i++) {
                         var btnEl = allButtonEls[i];
@@ -154,22 +197,24 @@ angular.module('angularPromiseButtons')
 
 
                 // INIT
+                // ---------
+
                 // check if there is any value given via attrs.promiseBtn
                 if (!attrs.promiseBtn) {
                     // handle ngClick function directly returning a promise
-                    if (attrs.hasOwnProperty(CLICK_ATTR)) {
+                    if (attrs.hasOwnProperty(cfg.CLICK_ATTR)) {
                         appendSpinnerTpl(el);
                         addHandlersForCurrentBtnOnly(el);
-                        initHandlingOfViewFunctionsReturningAPromise(CLICK_EVENT, CLICK_ATTR, el);
+                        initHandlingOfViewFunctionsReturningAPromise(cfg.CLICK_EVENT, cfg.CLICK_ATTR, el);
                     }
                     // handle ngSubmit function directly returning a promise
-                    else if (attrs.hasOwnProperty(SUBMIT_ATTR)) {
+                    else if (attrs.hasOwnProperty(cfg.SUBMIT_ATTR)) {
                         // get child submits for form elements
                         var btnElements = getSubmitBtnChildren(el);
 
                         appendSpinnerTpl(btnElements);
                         addHandlersForCurrentBtnOnly(btnElements);
-                        initHandlingOfViewFunctionsReturningAPromise(SUBMIT_EVENT, SUBMIT_ATTR, btnElements);
+                        initHandlingOfViewFunctionsReturningAPromise(cfg.SUBMIT_EVENT, cfg.SUBMIT_ATTR, btnElements);
                     }
                 }
                 // handle promises passed via scope.promiseBtn
@@ -186,13 +231,13 @@ angular.module('angularPromiseButtons')
                 // watch and update options being changed
                 scope.$watch('promiseBtnOptions', function(newVal) {
                     if (angular.isObject(newVal)) {
-                        cfg = angular.extend({}, providerCfg, newVal);
+                        cfg = angular.extend({}, cfg, newVal);
                     }
                 }, true);
 
                 // cleanup
                 scope.$on('$destroy', function() {
-                    $timeout.cancel(timeout);
+                    $timeout.cancel(minDurationTimeout);
                 });
             }
         };
