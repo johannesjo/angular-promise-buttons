@@ -181,7 +181,7 @@ angular.module('angularPromiseButtons')
                  */
                 function getSubmitBtnChildren(formEl) {
                     var submitBtnEls = [];
-                    var allButtonEls = formEl.find('button');
+                    var allButtonEls = formEl.find(angularPromiseButtons.config.BTN_SELECTOR);
 
                     for (var i = 0; i < allButtonEls.length; i++) {
                         var btnEl = allButtonEls[i];

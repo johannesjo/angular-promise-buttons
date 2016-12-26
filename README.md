@@ -103,7 +103,8 @@ angular.module('exampleApp', [
     CLICK_EVENT: 'click',
     CLICK_ATTR: 'ngClick',
     SUBMIT_EVENT: 'submit',
-    SUBMIT_ATTR: 'ngSubmit'
+    SUBMIT_ATTR: 'ngSubmit',
+    BTN_SELECTOR: 'button'
   });
 });
 ```
