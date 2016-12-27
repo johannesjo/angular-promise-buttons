@@ -21,6 +21,9 @@ describe('promise-buttons directive', function() {
         scope = $rootScope.$new();
 
         fakeFact = {
+            noPromise: function() {
+              // here is just nothing
+            },
             success: function() {
                 var defer = $q.defer();
                 $timeout(function() {
@@ -352,6 +355,16 @@ describe('promise-buttons directive', function() {
             $timeout.flush();
             expect(element.hasClass('is-loading'))
                 .toBeFalsy();
+        });
+
+        it('hasn\'t the is-spinning when there is no promise at all', function() {
+          scope.asyncCall = function() {
+            return fakeFact.noPromise();
+          };
+          element.triggerHandler('click');
+          scope.$digest();
+          expect(element.hasClass('is-loading'))
+            .toBeFalsy();
         });
 
         it('should work the same with response errors', function() {
