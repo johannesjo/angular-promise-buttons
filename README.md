@@ -59,10 +59,10 @@ $scope.yourServiceCaller = function ()
 };
 ```
 
-### alternative syntax
-There is also an alternative syntax, which allows you to share promises between buttons (and possibly other directives):
+### alternative syntax and using $event
+There is also an alternative syntax, which allows you to share promises between buttons (and possibly other directives) and is especially useful, if you want to use the `$event` somehow:
 ```html
-<button ng-click="yourServiceCaller()"
+<button ng-click="yourServiceCaller($event)"
         promise-btn="yourPromise">MyBtn</button>
 ```
 Now you just have to assign a promise to ```yourPromise```:
@@ -71,6 +71,8 @@ Now you just have to assign a promise to ```yourPromise```:
 $scope.yourServiceCaller = function ()
 {
   $scope.yourPromise = fakeFactory.method().then(...);
+  // this is now also possible
+  $event.preventDefault();
 };
 ```
 
