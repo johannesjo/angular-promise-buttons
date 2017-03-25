@@ -116,8 +116,10 @@
 <p>Also you can play with the code on <a href="http://plnkr.co/edit/yKrlohXVL15fRjTjZHBJ?p=preview">Plnkr</a>.</p>
 <p><a href="https://github.com/johannesjo/angular-promise-buttons/issues">Bug-reports or feature request</a> as well as any other kind of <strong>feedback is highly welcome!</strong></p>
 <h2 id="getting-started">getting started</h2>
-<p>Install it via bower</p>
+<p>Install it via bower or npm</p>
 <pre><code>bower install angular-promise-buttons -S
+# or via npm
+npm install angular-promise-buttons -S
 </code></pre><p>and add <code>angularPromiseButtons</code> as dependency in your main module:</p>
 <pre><code>angular.module(&#39;yourApp&#39;,[
   &#39;angularPromiseButtons&#39;
@@ -146,9 +148,9 @@ $scope.yourServiceCaller = function ()
   return fakeFactory.method().then(...);
 };
 </code></pre>
-<h3 id="alternative-syntax">alternative syntax</h3>
-<p>There is also an alternative syntax, which allows you to share promises between buttons (and possibly other directives):</p>
-<pre><code class="lang-html">&lt;button ng-click=&quot;yourServiceCaller()&quot;
+<h3 id="alternative-syntax-and-using-event">alternative syntax and using $event</h3>
+<p>There is also an alternative syntax, which allows you to share promises between buttons (and possibly other directives) and is especially useful, if you want to use the <code>$event</code> somehow:</p>
+<pre><code class="lang-html">&lt;button ng-click=&quot;yourServiceCaller($event)&quot;
         promise-btn=&quot;yourPromise&quot;&gt;MyBtn&lt;/button&gt;
 </code></pre>
 <p>Now you just have to assign a promise to <code>yourPromise</code>:</p>
@@ -156,6 +158,8 @@ $scope.yourServiceCaller = function ()
 $scope.yourServiceCaller = function ()
 {
   $scope.yourPromise = fakeFactory.method().then(...);
+  // this is now also possible
+  $event.preventDefault();
 };
 </code></pre>
 <h2 id="styling-the-button">styling the button</h2>
@@ -231,8 +235,8 @@ $scope.yourServiceCaller = function ()
 
 
 <!-- bower:js -->
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.0-beta.1/angular.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.0-beta.1/angular-animate.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-animate.min.js"></script>
 <script src="bower_components/angular-mocks/angular-mocks.js"></script>
 <!-- endbower -->
 

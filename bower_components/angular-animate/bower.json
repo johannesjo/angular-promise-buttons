@@ -1,9 +1,10 @@
 {
   "name": "angular-animate",
-  "version": "1.3.20",
+  "version": "1.6.3",
+  "license": "MIT",
   "main": "./angular-animate.js",
   "ignore": [],
   "dependencies": {
-    "angular": "1.3.20"
+    "angular": "1.6.3"
   }
 }
