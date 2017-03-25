@@ -156,13 +156,13 @@ angular.module('angularPromiseButtons')
                         el.unbind(eventToHandle);
 
                         // rebind, but this time watching it's return value
-                        el.bind(eventToHandle, function() {
+                        el.bind(eventToHandle, function(event) {
                             // Make sure we run the $digest cycle
                             scope.$apply(function() {
                                 callbacks.forEach(function(cb) {
                                     // execute function on parent scope
                                     // as we're in an isolate scope here
-                                    var promise = cb(scope.$parent, {$event: eventToHandle});
+                                    var promise = cb(scope.$parent, {$event: event});
 
                                     // only init watcher if not done before
                                     if (!promiseWatcher) {
