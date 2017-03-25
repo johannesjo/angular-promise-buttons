@@ -17,9 +17,11 @@ Also you can play with the code on [Plnkr](http://plnkr.co/edit/yKrlohXVL15fRjTj
 
 ## getting started
 
-Install it via bower
+Install it via bower or npm
 ```
 bower install angular-promise-buttons -S
+# or via npm
+npm install angular-promise-buttons -S
 ```
 and add `angularPromiseButtons` as dependency in your main module:
 ```
