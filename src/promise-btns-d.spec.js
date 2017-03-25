@@ -8,7 +8,9 @@ describe('promise-buttons directive', function() {
     var $compile;
     var fakeFact;
 
-    beforeEach(module('angularPromiseButtons'));
+    beforeEach(module('angularPromiseButtons', function ($qProvider) {
+        $qProvider.errorOnUnhandledRejections(false);
+    }));
 
     beforeEach(inject(function(_$rootScope_, _$compile_, _$timeout_, _$q_, _$http_, _$httpBackend_) {
         $rootScope = _$rootScope_;
