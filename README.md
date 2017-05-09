@@ -8,6 +8,8 @@ angular-promise-buttons
 
 *Chilled Buttons for AngularJS*
 
+For angular 2-4 version [go here](https://github.com/johannesjo/angular2-promise-buttons).
+
 There are cool loading buttons out there for angular. Only thing which annoys me, is that you (most of the times) have to manually trigger their loading state via a boolean which leads to a bit of repetition, declaring those again and again. ```angular-promise-buttons``` exists to take away some of that, by handling the loading state directly by passing the promise. Saves you at least two lines of code every time. Check out the [DEMO](http://johannesjo.github.io/angular-promise-buttons/#demo)!
 
 Also you can play with the code on [Plnkr](http://plnkr.co/edit/yKrlohXVL15fRjTjZHBJ?p=preview).
