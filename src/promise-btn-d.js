@@ -118,18 +118,25 @@ angular.module('angularPromiseButtons')
                  * Used to limit loading state to show only for the currently
                  * clicked button.
                  * @param {Object}btnEl
+                 * @param {Object}formEl
                  */
-                function addHandlersForCurrentBtnOnly(btnEl) {
+                function addHandlersForCurrentBtnOnly(btnEl, formEl) {
                     // handle current button only options via click
                     if (cfg.addClassToCurrentBtnOnly) {
                         btnEl.on(cfg.CLICK_EVENT, function() {
-                            btnEl.addClass(cfg.btnLoadingClass);
+                            if(!formEl || formEl && formEl.$valid)
+                            {
+                                btnEl.addClass(cfg.btnLoadingClass);
+                            }
                         });
                     }
 
                     if (cfg.disableCurrentBtnOnly) {
                         btnEl.on(cfg.CLICK_EVENT, function() {
-                            btnEl.attr('disabled', 'disabled');
+                            if(!formEl || formEl && formEl.$valid)
+                            {
+                                btnEl.attr('disabled', 'disabled');
+                            }
                         });
                     }
                 }
@@ -211,7 +218,7 @@ angular.module('angularPromiseButtons')
                         var btnElements = getSubmitBtnChildren(el);
 
                         appendSpinnerTpl(btnElements);
-                        addHandlersForCurrentBtnOnly(btnElements);
+                        addHandlersForCurrentBtnOnly(btnElements, el);
                         initHandlingOfViewFunctionsReturningAPromise(cfg.SUBMIT_EVENT, cfg.SUBMIT_ATTR, btnElements);
                     }
                 }
