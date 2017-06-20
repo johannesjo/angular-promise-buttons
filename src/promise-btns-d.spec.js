@@ -40,6 +40,24 @@ describe('promise-buttons directive', function() {
                 });
                 return defer.promise;
             },
+            es6Success: function() {
+              return new Promise(function(res) {
+                $timeout(function() {
+                  scope.$apply(function () {
+                    res({});
+                  });
+                });
+              });
+            },
+            es6Error: function() {
+              return new Promise(function(res, rej) {
+                $timeout(function() {
+                  scope.$apply(function () {
+                    rej({});
+                  });
+                });
+              });
+            },
             endless: function() {
                 var defer = $q.defer();
                 return defer.promise;
@@ -69,7 +87,7 @@ describe('promise-buttons directive', function() {
     });
 
 
-    describe('a simple promise on click', function() {
+    describe('a simple angular promise on click', function() {
         var element;
 
         beforeEach(function() {
@@ -211,6 +229,80 @@ describe('promise-buttons directive', function() {
                 .toBe(undefined);
         }));
     });
+
+
+  describe('an es6 promise on click', function() {
+    var element;
+
+    beforeEach(function() {
+      var html = '<button ng-click="asyncCall()" promise-btn="promise">Success after delay</button>';
+      element = $compile(html)(scope);
+      scope.$digest();
+      scope.asyncCall = function() {
+        scope.promise = fakeFact.es6Success();
+      };
+    });
+
+    it('should have a spinner appended', function() {
+      expect(angular.element(element.find('span')[0])
+        .hasClass('btn-spinner'))
+        .toBeTruthy();
+    });
+
+    it('has the is-spinning class appended on click', function() {
+      element.triggerHandler('click');
+      scope.$digest();
+      expect(element.hasClass('is-loading'))
+        .toBeTruthy();
+    });
+
+    it('is disabled on click', function() {
+      element.triggerHandler('click');
+      scope.$digest();
+      expect(element.attr('disabled'))
+        .toBe('disabled');
+    });
+
+    it('is not disabled after promise is resolved', function() {
+      element.triggerHandler('click');
+      scope.$digest();
+      expect(element.attr('disabled'))
+        .toBe('disabled');
+      $timeout.flush();
+      expect(element.attr('disabled'))
+        .not
+        .toBe('disabled');
+    });
+
+    it('hasn\'t the is-spinning after promise is resolved', function() {
+      element.triggerHandler('click');
+      scope.$digest();
+      expect(element.hasClass('is-loading'))
+        .toBeTruthy();
+      $timeout.flush();
+      expect(element.hasClass('is-loading'))
+        .toBeFalsy();
+    });
+
+    it('should work the same with response errors', function() {
+      scope.asyncCall = function() {
+        scope.promise = fakeFact.es6Error();
+      };
+
+      element.triggerHandler('click');
+      scope.$digest();
+      expect(element.hasClass('is-loading'))
+        .toBeTruthy();
+      expect(element.attr('disabled'))
+        .toBe('disabled');
+      $timeout.flush();
+      expect(element.hasClass('is-loading'))
+        .toBeFalsy();
+      expect(element.attr('disabled'))
+        .not
+        .toBe('disabled');
+    });
+  });
 
     describe('a $http promise on click', function() {
         var element;

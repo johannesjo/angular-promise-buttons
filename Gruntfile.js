@@ -404,6 +404,7 @@ module.exports = function (grunt)
                         'bower_components/angular/angular.js',
                         'bower_components/angular-animate/angular-animate.js',
                         'bower_components/angular-mocks/angular-mocks.js',
+                        'bower_components/es6-promise/es6-promise.js',
                         // endbower
                         '<%= appConfig.dist %>/angular-promise-buttons.min.js',
                         '<%= appConfig.app %>/*.spec.js'
