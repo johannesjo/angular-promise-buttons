@@ -6,6 +6,18 @@ angular.module('exampleApp', [
     {
         var standardDelay = 1000;
         return {
+            es6Success: function ()
+            {
+                return new Promise(function (resolve) {
+                  $timeout(function ()
+                  {
+                    $log.info('es6 resolve');
+                    resolve({
+                      msg: 'SUCCESS'
+                    });
+                  }, standardDelay);
+                });
+            },
             success: function ()
             {
                 var defer = $q.defer();
@@ -48,6 +60,12 @@ angular.module('exampleApp', [
             $scope.successPromise = false;
             $scope.successPromise = fakeFac.success();
             return $scope.successPromise;
+        };
+
+        $scope.es6Success = function ()
+        {
+            $scope.es6SuccessPromise = fakeFac.es6Success();
+            return $scope.es6SuccessPromise;
         };
 
         $scope.successDirectlyReturnedPromise = function ()

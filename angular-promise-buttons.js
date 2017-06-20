@@ -76,10 +76,26 @@ angular.module('angularPromiseButtons')
                         // for regular promises
                         if (mVal && mVal.then) {
                             initLoadingState(btnEl);
-                            mVal.finally(function() {
-                                promiseDone = true;
-                                handleLoadingFinished(btnEl);
-                            });
+
+                            // angular promise
+                            if (mVal.finally) {
+                                mVal.finally(function() {
+                                    promiseDone = true;
+                                    handleLoadingFinished(btnEl);
+                                });
+                            }
+                            // ES6 promises
+                            else {
+                                mVal.then(function() {
+                                    promiseDone = true;
+                                    handleLoadingFinished(btnEl);
+                                })
+                                .catch(function() {
+                                    promiseDone = true;
+                                    handleLoadingFinished(btnEl);
+                                });
+                            }
+
                         }
                         // for $resource
                         else if (mVal && mVal.$promise) {
