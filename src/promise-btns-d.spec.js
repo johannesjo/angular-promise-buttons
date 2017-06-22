@@ -43,18 +43,14 @@ describe('promise-buttons directive', function() {
       es6Success: function() {
         return new Promise(function(res) {
           $timeout(function() {
-            scope.$apply(function() {
-              res({});
-            });
+            res({});
           });
         });
       },
       es6Error: function() {
         return new Promise(function(res, rej) {
           $timeout(function() {
-            scope.$apply(function() {
-              rej({});
-            });
+            rej({});
           });
         });
       },
@@ -260,28 +256,37 @@ describe('promise-buttons directive', function() {
         .toBe('disabled');
     });
 
-    it('is not disabled after promise is resolved', function() {
+    it('is not disabled after promise is resolved', function(done) {
       element.triggerHandler('click');
       scope.$digest();
       expect(element.attr('disabled'))
         .toBe('disabled');
       $timeout.flush();
-      //expect(element.attr('disabled'))
-      //  .not
-      //  .toBe('disabled');
+
+      // because es6 promises are not linked to the digest cycle, we need to get tricky here
+      setTimeout(function() {
+        done();
+        expect(element.attr('disabled'))
+          .not
+          .toBe('disabled');
+      });
     });
 
-    it('hasn\'t the is-spinning after promise is resolved', function() {
+    it('hasn\'t the is-spinning after promise is resolved', function(done) {
       element.triggerHandler('click');
       scope.$digest();
       expect(element.hasClass('is-loading'))
         .toBeTruthy();
       $timeout.flush();
-      //expect(element.hasClass('is-loading'))
-      //  .toBeFalsy();
+      // because es6 promises are not linked to the digest cycle, we need to get tricky here
+      setTimeout(function() {
+        done();
+        expect(element.hasClass('is-loading'))
+          .toBeFalsy();
+      });
     });
 
-    it('should work the same with response errors', function() {
+    it('should work the same with response errors', function(done) {
       scope.asyncCall = function() {
         scope.promise = fakeFact.es6Error();
       };
@@ -293,11 +298,15 @@ describe('promise-buttons directive', function() {
       expect(element.attr('disabled'))
         .toBe('disabled');
       $timeout.flush();
-      //expect(element.hasClass('is-loading'))
-      //  .toBeFalsy();
-      //expect(element.attr('disabled'))
-      //  .not
-      //  .toBe('disabled');
+      // because es6 promises are not linked to the digest cycle, we need to get tricky here
+      setTimeout(function() {
+        done();
+        expect(element.hasClass('is-loading'))
+          .toBeFalsy();
+        expect(element.attr('disabled'))
+          .not
+          .toBe('disabled');
+      });
     });
   });
 
