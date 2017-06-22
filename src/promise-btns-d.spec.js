@@ -265,10 +265,10 @@ describe('promise-buttons directive', function() {
 
       // because es6 promises are not linked to the digest cycle, we need to get tricky here
       setTimeout(function() {
-        done();
         expect(element.attr('disabled'))
           .not
           .toBe('disabled');
+        done();
       });
     });
 
@@ -280,10 +280,10 @@ describe('promise-buttons directive', function() {
       $timeout.flush();
       // because es6 promises are not linked to the digest cycle, we need to get tricky here
       setTimeout(function() {
-        done();
         expect(element.hasClass('is-loading'))
           .toBeFalsy();
       });
+      done();
     });
 
     it('should work the same with response errors', function(done) {
@@ -300,12 +300,12 @@ describe('promise-buttons directive', function() {
       $timeout.flush();
       // because es6 promises are not linked to the digest cycle, we need to get tricky here
       setTimeout(function() {
-        done();
         expect(element.hasClass('is-loading'))
           .toBeFalsy();
         expect(element.attr('disabled'))
           .not
           .toBe('disabled');
+        done();
       });
     });
   });
