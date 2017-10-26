@@ -1,3 +1,4 @@
+[![npm version](https://badge.fury.io/js/angular-promise-buttons.svg)](https://badge.fury.io/js/angular-promise-buttons)
 [![Build Status](https://travis-ci.org/johannesjo/angular-promise-buttons.svg)](https://travis-ci.org/johannesjo/angular-promise-buttons?branch=master)
 [![Coverage Status](https://coveralls.io/repos/johannesjo/angular-promise-buttons/badge.svg?branch=master)](https://coveralls.io/r/johannesjo/angular-promise-buttons?branch=master)
 
