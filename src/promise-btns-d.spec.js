@@ -82,6 +82,29 @@ describe('promise-buttons directive', function() {
       .toHaveBeenCalled();
   });
 
+  it('should take ngDisabled state into account', function() {
+    var html = '<button ng-click="asyncCall()" promise-btn="promise" ng-disabled="isDisabledFromOutside">Success after delay</button>';
+    var element = $compile(html)(scope);
+    scope.$digest();
+    scope.asyncCall = function() {
+      scope.promise = fakeFact.success();
+    };
+
+    scope.isDisabledFromOutside = true;
+
+    element.triggerHandler('click');
+    scope.$digest();
+    expect(element.attr('disabled'))
+      .toBe('disabled');
+
+
+    $timeout.flush();
+
+    // should still be disabled
+    expect(element.attr('disabled'))
+      .toBe('disabled');
+  });
+
   describe('a simple angular promise on click', function() {
     var element;
 

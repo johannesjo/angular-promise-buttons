@@ -7,7 +7,8 @@ angular.module('angularPromiseButtons')
       priority: angularPromiseButtons.config.priority,
       scope: {
         promiseBtn: '=',
-        promiseBtnOptions: '=?'
+        promiseBtnOptions: '=?',
+        ngDisabled: '=?'
       },
       link: function(scope, el, attrs) {
         // provide configuration
@@ -44,7 +45,7 @@ angular.module('angularPromiseButtons')
             if (cfg.btnLoadingClass) {
               btnEl.removeClass(cfg.btnLoadingClass);
             }
-            if (cfg.disableBtn) {
+            if (cfg.disableBtn && !scope.ngDisabled) {
               btnEl.removeAttr('disabled');
             }
           }
