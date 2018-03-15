@@ -8,7 +8,7 @@ angular.module('angularPromiseButtons')
 
     var config = {
       spinnerTpl: '<span class="btn-spinner"></span>',
-      priority: 0,
+      priority: 1,
       disableBtn: true,
       btnLoadingClass: 'is-loading',
       addClassToCurrentBtnOnly: false,
@@ -30,7 +30,7 @@ angular.module('angularPromiseButtons')
     // *************************
 
     return {
-      extendConfig: function(newConfig) {
+      extendConfig: function (newConfig) {
         config = angular.extend(config, newConfig);
       },
 
@@ -38,7 +38,7 @@ angular.module('angularPromiseButtons')
       // ACTUAL FACTORY FUNCTION - used by the directive
       // ************************************************
 
-      $get: function() {
+      $get: function () {
         return {
           config: config
         };
