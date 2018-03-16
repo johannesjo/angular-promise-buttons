@@ -158,17 +158,17 @@ angular.module('angularPromiseButtons')
          * @param {String}attrToParse
          * @param {Object}btnEl
          */
-        function initHandlingOfViewFunctionsReturningAPromise(eventToHandle, attrToParse, btnEl) {
+        function updateHandler(eventToHandle, attrToParse, btnEl) {
           // we need to use evalAsync here, as
           // otherwise the click or submit event
           // won't be ready to be replaced
           var callbacks = getCallbacks(attrs[attrToParse]);
 
           // unbind original click event
-          el.unbind(eventToHandle);
+          el.off(eventToHandle);
 
           // rebind, but this time watching it's return value
-          el.bind(eventToHandle, function (event) {
+          el.on(eventToHandle, function (event) {
             // Make sure we run the $digest cycle
             scope.$apply(function () {
               callbacks.forEach(function (cb) {
@@ -187,6 +187,28 @@ angular.module('angularPromiseButtons')
               });
             });
           });
+        }
+
+        /**
+         * Used for the function syntax of the promise button directive by
+         * parsing the expressions provided by the attribute via getCallbacks().
+         * Unbinds the default event handlers, which is why it might sometimes
+         * be required to use the promise syntax.
+         *
+         * @param {String}eventToHandle the event to handle
+         * @param {String}attrToParse the attribute to parse the callback from (ngClick or ngSubmit)
+         * @param {Object}btnEl the button element to disable and add spinner
+         */
+        function initHandlingOfViewFunctionsReturningAPromise(eventToHandle, attrToParse, btnEl) {
+          // If the priority is higher then zero, we are sure that ngSubmit already attached the event handler,
+          // if not, then we need to execute with $evalAsync
+          if (cfg.priority > 0) {
+            updateHandler(eventToHandle, attrToParse, btnEl);
+          } else {
+            scope.$evalAsync(function () {
+              updateHandler(eventToHandle, attrToParse, btnEl);
+            });
+          }
         }
 
         /**

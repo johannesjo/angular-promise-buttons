@@ -53,7 +53,7 @@ describe('promise-buttons directive with config', function () {
 
     it('default priority', function () {
       expect(angularPromiseButtons.config.priority)
-        .toEqual(1);
+        .toEqual(10);
     });
 
     it('customize priority', function () {
