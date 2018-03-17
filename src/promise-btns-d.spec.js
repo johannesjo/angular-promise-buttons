@@ -505,24 +505,6 @@ describe('promise-buttons directive', function() {
         .toBe('disabled');
     });
 
-    it('should always be disabled and has class is loading for unresolvable requests', function() {
-      scope.asyncCall = function() {
-        return fakeFact.endless();
-      };
-
-      element.triggerHandler('click');
-      scope.$digest();
-      expect(element.hasClass('is-loading'))
-        .toBeTruthy();
-      expect(element.attr('disabled'))
-        .toBe('disabled');
-      $timeout.flush();
-      expect(element.hasClass('is-loading'))
-        .toBeTruthy();
-      expect(element.attr('disabled'))
-        .toBe('disabled');
-    });
-
     it('should be able to handle promise chains', function() {
       scope.asyncCall = function() {
         scope.v = { promiseIndex: 0 };
@@ -559,10 +541,10 @@ describe('promise-buttons directive', function() {
     });
 
     it('should work with $resource promises', inject(function($q) {
+      var defer = $q.defer();
       var mockBagelApiService = {
         query: function() {
-          var queryDeferred = $q.defer();
-          return { $promise: queryDeferred.promise };
+          return { $promise: defer.promise };
         }
       };
       scope.asyncCall = function() {
@@ -571,11 +553,6 @@ describe('promise-buttons directive', function() {
 
       element.triggerHandler('click');
       scope.$digest();
-      expect(element.hasClass('is-loading'))
-        .toBeTruthy();
-      expect(element.attr('disabled'))
-        .toBe('disabled');
-      $timeout.flush();
       expect(element.hasClass('is-loading'))
         .toBeTruthy();
       expect(element.attr('disabled'))
@@ -662,24 +639,6 @@ describe('promise-buttons directive', function() {
         .toBe('disabled');
     });
 
-    it('should always be disabled and has class is loading for unresolvable requests', function() {
-      scope.asyncCall = function() {
-        return fakeFact.endless();
-      };
-
-      formEl.triggerHandler('submit');
-      scope.$digest();
-      expect(btnEl.hasClass('is-loading'))
-        .toBeTruthy();
-      expect(btnEl.attr('disabled'))
-        .toBe('disabled');
-      $timeout.flush();
-      expect(btnEl.hasClass('is-loading'))
-        .toBeTruthy();
-      expect(btnEl.attr('disabled'))
-        .toBe('disabled');
-    });
-
     it('should be able to handle promise chains', function() {
       scope.asyncCall = function() {
         scope.v = { promiseIndex: 0 };
@@ -716,10 +675,10 @@ describe('promise-buttons directive', function() {
     });
 
     it('should work with $resource promises', inject(function($q) {
+      var defer = $q.defer();
       var mockBagelApiService = {
         query: function() {
-          var queryDeferred = $q.defer();
-          return { $promise: queryDeferred.promise };
+          return { $promise: defer.promise };
         }
       };
       scope.asyncCall = function() {
@@ -728,11 +687,6 @@ describe('promise-buttons directive', function() {
 
       formEl.triggerHandler('submit');
       scope.$digest();
-      expect(btnEl.hasClass('is-loading'))
-        .toBeTruthy();
-      expect(btnEl.attr('disabled'))
-        .toBe('disabled');
-      $timeout.flush();
       expect(btnEl.hasClass('is-loading'))
         .toBeTruthy();
       expect(btnEl.attr('disabled'))
