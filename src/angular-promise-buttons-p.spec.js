@@ -1,9 +1,9 @@
-describe('promise-buttons directive with config', function() {
+describe('promise-buttons directive with config', function () {
   'use strict';
 
   var provider;
 
-  beforeEach(module('angularPromiseButtons', function(angularPromiseButtonsProvider) {
+  beforeEach(module('angularPromiseButtons', function (angularPromiseButtonsProvider) {
     provider = angularPromiseButtonsProvider;
   }));
 
@@ -15,7 +15,7 @@ describe('promise-buttons directive with config', function() {
   var html;
   var $q;
 
-  beforeEach(inject(function(_$rootScope_, _$compile_, _$timeout_, _$q_) {
+  beforeEach(inject(function (_$rootScope_, _$compile_, _$timeout_, _$q_) {
     $rootScope = _$rootScope_;
     $compile = _$compile_;
     $timeout = _$timeout_;
@@ -24,39 +24,39 @@ describe('promise-buttons directive with config', function() {
     scope = $rootScope.$new();
 
     fakeFact = {
-      success: function() {
+      success: function () {
         var defer = $q.defer();
-        $timeout(function() {
+        $timeout(function () {
           defer.resolve();
         });
         return defer.promise;
       },
-      error: function() {
+      error: function () {
         var defer = $q.defer();
-        $timeout(function() {
+        $timeout(function () {
           defer.reject();
         });
         return defer.promise;
       },
-      endless: function() {
+      endless: function () {
         var defer = $q.defer();
         return defer.promise;
       }
     };
   }));
 
-  describe('configuration provider', function() {
+  describe('configuration provider', function () {
     var angularPromiseButtons;
-    beforeEach(inject(function(_angularPromiseButtons_) {
+    beforeEach(inject(function (_angularPromiseButtons_) {
       angularPromiseButtons = _angularPromiseButtons_;
     }));
 
-    it('default priority', function() {
+    it('default priority', function () {
       expect(angularPromiseButtons.config.priority)
-        .toEqual(0);
+        .toEqual(10);
     });
 
-    it('customize priority', function() {
+    it('customize priority', function () {
       var priority = 5;
       provider.extendConfig({
         priority: priority
@@ -66,17 +66,17 @@ describe('promise-buttons directive with config', function() {
     });
   });
 
-  describe('a simple success promise on click', function() {
+  describe('a simple success promise on click', function () {
     var element;
 
-    beforeEach(function() {
+    beforeEach(function () {
       html = '<button class="btn" ng-click="asyncCall()" promise-btn="promise">Success after delay</button>';
-      scope.asyncCall = function() {
+      scope.asyncCall = function () {
         scope.promise = fakeFact.success();
       };
     });
 
-    it('should have a customizable spinner-tpl', function() {
+    it('should have a customizable spinner-tpl', function () {
       provider.extendConfig({
         spinnerTpl: '<span class="CLASS-SPANNER"></span>'
       });
@@ -84,22 +84,22 @@ describe('promise-buttons directive with config', function() {
       scope.$digest();
 
       expect(angular.element(element.find('span')[0])
-        .hasClass('btn-spinner'))
+          .hasClass('btn-spinner'))
         .toBeFalsy();
       expect(angular.element(element.find('span')[0])
-        .hasClass('CLASS-SPANNER'))
+          .hasClass('CLASS-SPANNER'))
         .toBeTruthy();
 
     });
 
-    it('disabling the buttons can be deactivated', function() {
+    it('disabling the buttons can be deactivated', function () {
       provider.extendConfig({
         disableBtn: false
       });
       element = $compile(html)(scope);
       scope.$digest();
 
-      scope.asyncCall = function() {
+      scope.asyncCall = function () {
         scope.promise = fakeFact.error();
       };
 
@@ -111,14 +111,14 @@ describe('promise-buttons directive with config', function() {
         .toBeUndefined();
     });
 
-    it('is-loading class can be deactivated', function() {
+    it('is-loading class can be deactivated', function () {
       provider.extendConfig({
         btnLoadingClass: false
       });
       element = $compile(html)(scope);
       scope.$digest();
 
-      scope.asyncCall = function() {
+      scope.asyncCall = function () {
         scope.promise = fakeFact.error();
       };
 
@@ -130,7 +130,7 @@ describe('promise-buttons directive with config', function() {
         .toBe('disabled');
     });
 
-    it('has a settable loading class', function() {
+    it('has a settable loading class', function () {
       var customClass = 'CUSTOM';
       provider.extendConfig({
         btnLoadingClass: customClass
@@ -138,7 +138,7 @@ describe('promise-buttons directive with config', function() {
       element = $compile(html)(scope);
       scope.$digest();
 
-      scope.asyncCall = function() {
+      scope.asyncCall = function () {
         scope.promise = fakeFact.error();
       };
 
@@ -148,7 +148,7 @@ describe('promise-buttons directive with config', function() {
         .toBeTruthy();
     });
 
-    it('should add class and disabled to multiple buttons with the same promise', function() {
+    it('should add class and disabled to multiple buttons with the same promise', function () {
       provider.extendConfig({
         addClassToCurrentBtnOnly: false,
         disableCurrentBtnOnly: false
@@ -157,7 +157,7 @@ describe('promise-buttons directive with config', function() {
       var element2 = $compile(html)(scope);
       scope.$digest();
 
-      scope.asyncCall = function() {
+      scope.asyncCall = function () {
         scope.promise = fakeFact.error();
       };
 
@@ -175,7 +175,7 @@ describe('promise-buttons directive with config', function() {
         .toBe('disabled');
     });
 
-    it('should add class to currently clicked button only when option is specified', function() {
+    it('should add class to currently clicked button only when option is specified', function () {
       provider.extendConfig({
         addClassToCurrentBtnOnly: true
       });
@@ -183,7 +183,7 @@ describe('promise-buttons directive with config', function() {
       var element2 = $compile(html)(scope);
       scope.$digest();
 
-      scope.asyncCall = function() {
+      scope.asyncCall = function () {
         scope.promise = fakeFact.error();
       };
 
@@ -201,7 +201,7 @@ describe('promise-buttons directive with config', function() {
         .toBe('disabled');
     });
 
-    it('should add disabled attribute to currently clicked button only when option is specified', function() {
+    it('should add disabled attribute to currently clicked button only when option is specified', function () {
       provider.extendConfig({
         disableCurrentBtnOnly: true
       });
@@ -209,7 +209,7 @@ describe('promise-buttons directive with config', function() {
       var element2 = $compile(html)(scope);
       scope.$digest();
 
-      scope.asyncCall = function() {
+      scope.asyncCall = function () {
         scope.promise = fakeFact.error();
       };
 
@@ -227,7 +227,7 @@ describe('promise-buttons directive with config', function() {
         .toBe(undefined);
     });
 
-    it('should keep spinning until timeout is done, when minDuration option is set', function() {
+    it('should keep spinning until timeout is done, when minDuration option is set', function () {
       var defer;
 
       provider.extendConfig({
@@ -236,7 +236,7 @@ describe('promise-buttons directive with config', function() {
       element = $compile(html)(scope);
       scope.$digest();
 
-      scope.asyncCall = function() {
+      scope.asyncCall = function () {
         defer = $q.defer();
         scope.promise = defer.promise;
         return scope.promise;
@@ -262,19 +262,19 @@ describe('promise-buttons directive with config', function() {
     });
   });
 
-  describe('with attribute options', function() {
+  describe('with attribute options', function () {
     var htmlWithCfg;
     var htmlWithoutCfg;
 
-    beforeEach(function() {
+    beforeEach(function () {
       htmlWithCfg = '<button class="btn" promise-btn-options="options" ng-click="asyncCall()" promise-btn="promise">Success after delay</button>';
       htmlWithoutCfg = '<button class="btn" ng-click="asyncCall()" promise-btn="promise">Success after delay</button>';
-      scope.asyncCall = function() {
+      scope.asyncCall = function () {
         scope.promise = fakeFact.success();
       };
     });
 
-    it('should add class to currently clicked button only when option is specified', function() {
+    it('should add class to currently clicked button only when option is specified', function () {
       provider.extendConfig({
         disableBtn: false,
         btnLoadingClass: false
@@ -288,7 +288,7 @@ describe('promise-buttons directive with config', function() {
       var elWithoutCfg = $compile(htmlWithoutCfg)(scope);
       scope.$digest();
 
-      scope.asyncCall = function() {
+      scope.asyncCall = function () {
         scope.promise = fakeFact.error();
       };
 
@@ -306,7 +306,7 @@ describe('promise-buttons directive with config', function() {
         .toBe(undefined);
     });
 
-    it('should add disabled attribute to currently clicked button only when option is specified', function() {
+    it('should add disabled attribute to currently clicked button only when option is specified', function () {
       provider.extendConfig({
         disableBtn: true,
         btnLoadingClass: 'is-loading'
@@ -320,7 +320,7 @@ describe('promise-buttons directive with config', function() {
       var elWithoutCfg = $compile(htmlWithoutCfg)(scope);
       scope.$digest();
 
-      scope.asyncCall = function() {
+      scope.asyncCall = function () {
         scope.promise = fakeFact.error();
       };
 
